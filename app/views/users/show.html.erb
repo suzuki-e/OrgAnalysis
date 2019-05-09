@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @user.name %>
+</p>
+
+<p>
+  <strong>Deleted:</strong>
+  <%= @user.deleted %>
+</p>
+
+<p>
+  <strong>Real name:</strong>
+  <%= @user.real_name %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @user.email %>
+</p>
+
+<p>
+  <strong>Profile image:</strong>
+  <%= @user.profile_image %>
+</p>
+
+<p>
+  <strong>Is bot:</strong>
+  <%= @user.is_bot %>
+</p>
+
+<%= link_to 'Edit', edit_user_path(@user) %> |
+<%= link_to 'Back', users_path %>

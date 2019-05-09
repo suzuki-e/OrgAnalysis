@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  deleted: false
+  real_name: MyString
+  email: MyString
+  profile_image: MyString
+  is_bot: false
+
+two:
+  name: MyString
+  deleted: false
+  real_name: MyString
+  email: MyString
+  profile_image: MyString
+  is_bot: false
