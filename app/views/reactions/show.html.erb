@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Emoji:</strong>
+  <%= @reaction.emoji %>
+</p>
+
+<p>
+  <strong>Message:</strong>
+  <%= @reaction.message %>
+</p>
+
+<p>
+  <strong>Count:</strong>
+  <%= @reaction.count %>
+</p>
+
+<%= link_to 'Edit', edit_reaction_path(@reaction) %> |
+<%= link_to 'Back', reactions_path %>

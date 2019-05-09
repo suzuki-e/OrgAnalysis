@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_09_083523) do
+ActiveRecord::Schema.define(version: 2019_05_09_084313) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,14 @@ ActiveRecord::Schema.define(version: 2019_05_09_083523) do
     t.index ["id"], name: "index_channels_on_id", unique: true
   end
 
+  create_table "emojis", id: false, force: :cascade do |t|
+    t.string "id", null: false
+    t.string "url", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["id"], name: "index_emojis_on_id", unique: true
+  end
+
   create_table "messages", force: :cascade do |t|
     t.bigint "channel_user_id"
     t.text "text"
@@ -45,6 +53,16 @@ ActiveRecord::Schema.define(version: 2019_05_09_083523) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["channel_user_id"], name: "index_messages_on_channel_user_id"
+  end
+
+  create_table "reactions", force: :cascade do |t|
+    t.string "emoji_id"
+    t.bigint "message_id"
+    t.integer "count"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["emoji_id"], name: "index_reactions_on_emoji_id"
+    t.index ["message_id"], name: "index_reactions_on_message_id"
   end
 
   create_table "users", id: false, force: :cascade do |t|
@@ -63,4 +81,6 @@ ActiveRecord::Schema.define(version: 2019_05_09_083523) do
   add_foreign_key "channel_users", "channels"
   add_foreign_key "channel_users", "users"
   add_foreign_key "messages", "channel_users"
+  add_foreign_key "reactions", "emojis"
+  add_foreign_key "reactions", "messages"
 end
