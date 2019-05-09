@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @channel.name %>
+</p>
+
+<p>
+  <strong>Created:</strong>
+  <%= @channel.created %>
+</p>
+
+<p>
+  <strong>Is archived:</strong>
+  <%= @channel.is_archived %>
+</p>
+
+<p>
+  <strong>Name normalized:</strong>
+  <%= @channel.name_normalized %>
+</p>
+
+<p>
+  <strong>Is private:</strong>
+  <%= @channel.is_private %>
+</p>
+
+<p>
+  <strong>Topic:</strong>
+  <%= @channel.topic %>
+</p>
+
+<p>
+  <strong>Purpose:</strong>
+  <%= @channel.purpose %>
+</p>
+
+<%= link_to 'Edit', edit_channel_path(@channel) %> |
+<%= link_to 'Back', channels_path %>

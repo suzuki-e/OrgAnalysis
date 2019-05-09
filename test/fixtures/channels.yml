@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  created: 1
+  is_archived: false
+  name_normalized: MyString
+  is_private: false
+  topic: MyString
+  purpose: MyString
+
+two:
+  name: MyString
+  created: 1
+  is_archived: false
+  name_normalized: MyString
+  is_private: false
+  topic: MyString
+  purpose: MyString
