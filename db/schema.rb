@@ -10,10 +10,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_09_081237) do
+ActiveRecord::Schema.define(version: 2019_05_09_082907) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "channel_users", force: :cascade do |t|
+    t.string "channel_id"
+    t.string "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["channel_id"], name: "index_channel_users_on_channel_id"
+    t.index ["user_id"], name: "index_channel_users_on_user_id"
+  end
+
+  create_table "channels", id: false, force: :cascade do |t|
+    t.string "id", null: false
+    t.string "name"
+    t.integer "created"
+    t.boolean "is_archived"
+    t.string "name_normalized"
+    t.boolean "is_private"
+    t.string "topic"
+    t.string "purpose"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["id"], name: "index_channels_on_id", unique: true
+  end
 
   create_table "users", id: false, force: :cascade do |t|
     t.string "id", null: false
@@ -28,4 +51,6 @@ ActiveRecord::Schema.define(version: 2019_05_09_081237) do
     t.index ["id"], name: "index_users_on_id", unique: true
   end
 
+  add_foreign_key "channel_users", "channels"
+  add_foreign_key "channel_users", "users"
 end
