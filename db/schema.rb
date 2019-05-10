@@ -16,30 +16,30 @@ ActiveRecord::Schema.define(version: 2019_05_09_084313) do
   enable_extension "plpgsql"
 
   create_table "channel_users", force: :cascade do |t|
-    t.string "channel_id"
-    t.string "user_id"
+    t.bigint "channel_id"
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["channel_id"], name: "index_channel_users_on_channel_id"
     t.index ["user_id"], name: "index_channel_users_on_user_id"
   end
 
-  create_table "channels", id: false, force: :cascade do |t|
-    t.string "id", null: false
-    t.string "name"
-    t.integer "created"
-    t.boolean "is_archived"
-    t.string "name_normalized"
-    t.boolean "is_private"
-    t.string "topic"
-    t.string "purpose"
+  create_table "channels", force: :cascade do |t|
+    t.string "slack_id", null: false
+    t.string "name", null: false
+    t.integer "created", null: false
+    t.boolean "is_archived", default: false, null: false
+    t.string "name_normalized", null: false
+    t.boolean "is_private", default: false, null: false
+    t.string "topic", null: false
+    t.string "purpose", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["id"], name: "index_channels_on_id", unique: true
   end
 
-  create_table "emojis", id: false, force: :cascade do |t|
-    t.string "id", null: false
+  create_table "emojis", force: :cascade do |t|
+    t.string "slack_id", null: false
     t.string "url", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -48,31 +48,31 @@ ActiveRecord::Schema.define(version: 2019_05_09_084313) do
 
   create_table "messages", force: :cascade do |t|
     t.bigint "channel_user_id"
-    t.text "text"
-    t.string "ts"
+    t.text "text", null: false
+    t.string "ts", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["channel_user_id"], name: "index_messages_on_channel_user_id"
   end
 
   create_table "reactions", force: :cascade do |t|
-    t.string "emoji_id"
+    t.bigint "emoji_id"
     t.bigint "message_id"
-    t.integer "count"
+    t.integer "count", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["emoji_id"], name: "index_reactions_on_emoji_id"
     t.index ["message_id"], name: "index_reactions_on_message_id"
   end
 
-  create_table "users", id: false, force: :cascade do |t|
-    t.string "id", null: false
-    t.string "name"
-    t.boolean "deleted"
-    t.string "real_name"
-    t.string "email"
-    t.string "profile_image"
-    t.boolean "is_bot"
+  create_table "users", force: :cascade do |t|
+    t.string "slack_id", null: false
+    t.string "name", null: false
+    t.boolean "deleted", default: false, null: false
+    t.string "real_name", null: false
+    t.string "email", null: false
+    t.string "profile_image", null: false
+    t.boolean "is_bot", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["id"], name: "index_users_on_id", unique: true

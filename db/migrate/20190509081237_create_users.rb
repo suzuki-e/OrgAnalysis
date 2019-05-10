@@ -1,13 +1,13 @@
 class CreateUsers < ActiveRecord::Migration[5.2]
   def change
-    create_table :users, id: false do |t|
-      t.string :id, null: false
-      t.string :name
-      t.boolean :deleted
-      t.string :real_name
-      t.string :email
-      t.string :profile_image
-      t.boolean :is_bot
+    create_table :users do |t|
+      t.string :slack_id, null: false
+      t.string :name, null: false
+      t.boolean :deleted, null: false, default: false
+      t.string :real_name, null: false
+      t.string :email, null: false
+      t.string :profile_image, null: false
+      t.boolean :is_bot, null: false, default: false
 
       t.timestamps
     end

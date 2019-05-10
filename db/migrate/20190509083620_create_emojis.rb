@@ -1,7 +1,7 @@
 class CreateEmojis < ActiveRecord::Migration[5.2]
   def change
-    create_table :emojis, id: false do |t|
-      t.string :id, null: false
+    create_table :emojis do |t|
+      t.string :slack_id, null: false
       t.string :url, null: false
 
       t.timestamps
