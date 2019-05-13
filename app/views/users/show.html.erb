@@ -1,13 +1,13 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <strong>Name:</strong>
-  <%= @user.name %>
+  <strong>Profile image:</strong>
+  <img src=<%= @user.profile_image %> alt="" width="" height="" border=""/>
 </p>
 
 <p>
-  <strong>Deleted:</strong>
-  <%= @user.deleted %>
+  <strong>Name:</strong>
+  <%= @user.name %>
 </p>
 
 <p>
@@ -20,15 +20,22 @@
   <%= @user.email %>
 </p>
 
-<p>
-  <strong>Profile image:</strong>
-  <%= @user.profile_image %>
-</p>
 
 <p>
   <strong>Is bot:</strong>
   <%= @user.is_bot %>
 </p>
+
+<p>
+  <strong>Deleted:</strong>
+  <%= @user.deleted %>
+</p>
+
+<p>
+  <strong>Slack id:</strong>
+  <%= @user.slack_id %>
+</p>
+
 
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>
