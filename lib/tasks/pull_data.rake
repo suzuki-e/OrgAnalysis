@@ -27,26 +27,23 @@ namespace :pull_data do
   end
 
   task emoji: :environment do
-    puts 'emojiを読み込むタスク'
-    count = 0
+    puts 'emojiの保存を開始しました'
     emojis = slack_client.emoji_list.emoji
-    emojis.each do |key, value|
+    emojis.each.with_index(1) do |key, i|
       e = Emoji.find_or_initialize_by(slack_id: key)
       e.attributes = {
-        url: value
+        url: emojis.fetch(key)
       }
       e.save!
-      count += 1
-      puts count if (count % 1000).zero?
+      puts i if (i % 1000).zero?
     end
-    puts "Saved #{count} emoji records."
+    puts 'Finished'
   end
 
   task user: :environment do
-    puts 'userを読み込むタスク'
+    puts 'userの保存を開始しました'
     users = slack_client.users_list.members
-    count = 0
-    users.each do |user|
+    users.each.with_index(1) do |user, i|
       # 不必要にユーザーを保存しないようにする
       next if user.deleted
       next if user.is_bot
@@ -62,19 +59,17 @@ namespace :pull_data do
         is_bot: user.is_bot
       }
       u.save!
-      count += 1
-      puts count if (count % 1000).zero?
+      puts i if (i % 1000).zero?
     end
-    puts "Saved #{count} user records."
+    puts 'Finished'
   end
 
   task channel: :environment do
-    puts 'Channel一覧を取得'
+    puts 'Channelの保存を開始しました'
     conversations = slack_client.conversations_list(limit: 100_000,
                                                     types: :public_channel,
                                                     exclude_archived: true).channels
-    count = 0
-    conversations.each do |conversation|
+    conversations.each.with_index(1) do |conversation, i|
       # 不必要に保存しない
       next unless conversation.is_channel
       next if conversation.is_private
@@ -91,19 +86,17 @@ namespace :pull_data do
         purpose: conversation.purpose
       }
       c.save!
-      count += 1
-      puts count if (count % 1000).zero?
+      puts i if (i % 1000).zero?
     end
-    puts "Saved #{count} channel records."
+    puts 'Finished'
   end
 
   task channel_user: :environment do
-    puts 'Channel毎にユーザ一覧を取得'
+    puts 'Channel毎のユーザ一覧の保存を開始しました'
     conversations = slack_client.conversations_list(limit: 100000,
                                                     types: :public_channel,
                                                     exclude_archived: true).channels
-    count = 0
-    conversations.each do |conversation|
+    conversations.each.with_index(1) do |conversation, i|
       # 不必要に保存しない
       next unless conversation.is_channel
       next if conversation.is_private
@@ -126,21 +119,19 @@ namespace :pull_data do
           joined: true
         }
         cu.save!
-        count += 1
-        puts count if (count % 1000).zero?
+        puts i if (i % 1000).zero?
       end
     end
-    puts "Saved #{count} channel_user records."
+    puts 'Finished'
   end
 
   task message: :environment do
-    puts 'Channel毎にメッセージ一覧、リアクション一覧を取得'
+    puts 'Channel毎のメッセージ一覧、リアクション一覧の保存を開始しました'
     per_channel_message_limit = 10
     conversations = slack_client.conversations_list(limit: 100_000,
                                                     types: :public_channel,
                                                     exclude_archived: true).channels
-    count = 0
-    conversations.each do |conversation|
+    conversations.each.with_index(1) do |conversation, i|
       # 不必要に保存しない
       next unless conversation.is_channel
       next if conversation.is_private
@@ -190,8 +181,7 @@ namespace :pull_data do
           text: message.text
         }
         m.save!
-        count += 1
-        puts count if (count % 1000).zero?
+        puts i if (i % 1000).zero?
 
         # リアクション(emoji)がある場合、その情報を取得
         next unless message.key?('reactions')
@@ -210,11 +200,11 @@ namespace :pull_data do
           end
           r = Reaction.find_or_create_by!(emoji_id: emoji.id,
                                           message_id: m.id)
-          r.attributes = {count: reaction.fetch('count')}
+          r.attributes = { count: reaction.fetch('count') }
           r.save!
         end
       end
     end
-    puts "Saved #{count} message records."
+    puts 'Finished'
   end
 end
