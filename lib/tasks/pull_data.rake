@@ -29,10 +29,11 @@ namespace :pull_data do
   task emoji: :environment do
     puts 'emojiの保存を開始しました'
     emojis = slack_client.emoji_list.emoji
-    emojis.each.with_index(1) do |key, i|
-      e = Emoji.find_or_initialize_by(slack_id: key)
+    emojis.each.with_index(1) do |emoji, i|
+      name, url = emoji
+      e = Emoji.find_or_initialize_by(slack_id: name)
       e.attributes = {
-        url: emojis.fetch(key)
+        url: url
       }
       e.save!
       puts i if (i % 1000).zero?
@@ -43,10 +44,12 @@ namespace :pull_data do
   task user: :environment do
     puts 'userの保存を開始しました'
     users = slack_client.users_list.members
+    # TODO: Userの削除をどう扱うか。登録Userの削除を追うことが、現状できない
     users.each.with_index(1) do |user, i|
       # 不必要にユーザーを保存しないようにする
       next if user.deleted
       next if user.is_bot
+      # デフォルトで存在するslackbotのユーザーIDは固定. user.is_botで引っかからない様子.
       next if user.id == 'USLACKBOT'
 
       u = User.find_or_initialize_by(slack_id: user.id)
@@ -66,24 +69,25 @@ namespace :pull_data do
 
   task channel: :environment do
     puts 'Channelの保存を開始しました'
-    conversations = slack_client.conversations_list(limit: 100_000,
-                                                    types: :public_channel,
-                                                    exclude_archived: true).channels
-    conversations.each.with_index(1) do |conversation, i|
+    channels = slack_client.conversations_list(limit: 100_000,
+                                               types: :public_channel,
+                                               exclude_archived: true).channels
+    channels.each.with_index(1) do |channel, i|
       # 不必要に保存しない
-      next unless conversation.is_channel
-      next if conversation.is_private
-      next if conversation.is_archived
+      # TODO: チャンネルがPublicからPrivateになったり、Archiveされた場合のトラックができない。
+      next unless channel.is_channel
+      next if channel.is_private
+      next if channel.is_archived
 
-      c = Channel.find_or_initialize_by(slack_id: conversation.id)
+      c = Channel.find_or_initialize_by(slack_id: channel.id)
       c.attributes = {
-        name: conversation.name,
-        created: conversation.created,
-        is_archived: conversation.is_archived,
-        name_normalized: conversation.name_normalized,
-        is_private: conversation.is_private,
-        topic: conversation.topic,
-        purpose: conversation.purpose
+        name: channel.name,
+        created: channel.created,
+        is_archived: channel.is_archived,
+        name_normalized: channel.name_normalized,
+        is_private: channel.is_private,
+        topic: channel.topic,
+        purpose: channel.purpose
       }
       c.save!
       puts i if (i % 1000).zero?
@@ -91,57 +95,52 @@ namespace :pull_data do
     puts 'Finished'
   end
 
-  task channel_user: :environment do
+  task channel_user: %i[environment channel user] do
     puts 'Channel毎のユーザ一覧の保存を開始しました'
-    conversations = slack_client.conversations_list(limit: 100000,
-                                                    types: :public_channel,
-                                                    exclude_archived: true).channels
-    conversations.each.with_index(1) do |conversation, i|
+    # TODO: pagination
+    channels = slack_client.conversations_list(limit: 100000,
+                                               types: :public_channel,
+                                               exclude_archived: true).channels
+    channels.each.with_index(1) do |channel, i|
       # 不必要に保存しない
-      next unless conversation.is_channel
-      next if conversation.is_private
-      next if conversation.is_archived
+      next unless channel.is_channel
+      next if channel.is_private
+      next if channel.is_archived
 
-      # DB上のid取得
-      channel_id = Channel.find_by(slack_id: conversation.id).id
-      member_ids = slack_client.conversations_members(channel: conversation.id,
+      c = Channel.find_by(slack_id: channel.id)
+      member_ids = slack_client.conversations_members(channel: channel.id,
                                                       limit: 10000).members
       member_ids.each do |member_id|
-        # Userモデルからidを取得。
         user = User.find_by(slack_id: member_id)
-        # Botなど、UserDBに保存していないユーザーはスキップする
+        # Botなど、UserDBに保存していないユーザーの場合はnilになるのでスキップする
         next if user.nil?
 
-        cu = ChannelUser.new
-        cu.attributes = {
-          user_id: user.id,
-          channel_id: channel_id,
-          joined: true
-        }
-        cu.save!
+        # TODO: チャンネルから脱退したらどうなる？現状だと追えない
+        ChannelUser.find_or_create_by!(user: user,
+                                       channel: c,
+                                       joined: true)
         puts i if (i % 1000).zero?
       end
     end
     puts 'Finished'
   end
 
-  task message: :environment do
+  task message: %i[environment channel_user] do
     puts 'Channel毎のメッセージ一覧、リアクション一覧の保存を開始しました'
     per_channel_message_limit = 10
-    conversations = slack_client.conversations_list(limit: 100_000,
-                                                    types: :public_channel,
-                                                    exclude_archived: true).channels
-    conversations.each.with_index(1) do |conversation, i|
+    channels = slack_client.conversations_list(limit: 100_000,
+                                               types: :public_channel,
+                                               exclude_archived: true).channels
+    channels.each do |channel|
       # 不必要に保存しない
-      next unless conversation.is_channel
-      next if conversation.is_private
-      next if conversation.is_archived
+      next unless channel.is_channel
+      next if channel.is_private
+      next if channel.is_archived
 
-      # DB上のid取得
-      channel_id = Channel.find_by(slack_id: conversation.id).id
+      c = Channel.find_by!(slack_id: channel.id)
 
       begin
-        messages_list = slack_client.conversations_history(channel: conversation.id,
+        messages_list = slack_client.conversations_history(channel: channel.id,
                                                            limit: per_channel_message_limit).messages
       rescue Slack::Web::Api::Errors::TooManyRequestsError => e
         # Slack APIの Limitationに触れたらやり直し
@@ -152,7 +151,7 @@ namespace :pull_data do
         retry
       end
 
-      messages_list.each do |message|
+      messages_list.each.with_index(1) do |message, i|
         # Channel Joinなどの自動メッセージをスキップする
         # ref. https://api.slack.com/events/message
         next if message.key?('subtype')
@@ -162,13 +161,13 @@ namespace :pull_data do
         # Botなど、UserDBに保存していないユーザーはスキップする
         next if user.nil?
 
-        channel_user = ChannelUser.find_by(user_id: user.id, channel_id: channel_id)
+        channel_user = ChannelUser.find_by(user: user, channel: c)
         # 現在はチャンネルにJoinしていないけど、過去にJoinし、発言していた人向けに、channel_userレコードを作成
         if channel_user.nil?
           cu = ChannelUser.new
           cu.attributes = {
-            user_id: user.id,
-            channel_id: channel_id,
+            user: user,
+            channel: c,
             joined: false
           }
           cu.save!
