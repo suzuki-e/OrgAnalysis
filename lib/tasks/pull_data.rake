@@ -28,6 +28,7 @@ namespace :pull_data do
 
   task emoji: :environment do
     puts 'emojiの保存を開始しました'
+    # 一部の標準絵文字はslack-apiでは取得できない。
     emojis = slack_client.emoji_list.emoji
     emojis.each.with_index(1) do |emoji, i|
       name, url = emoji
@@ -174,7 +175,7 @@ namespace :pull_data do
           channel_user = cu
         end
 
-        m = Message.find_or_initialize_by(channel_user_id: channel_user.id,
+        m = Message.find_or_initialize_by(channel_user: channel_user,
                                           ts: message.ts)
         m.attributes = {
           text: message.text
@@ -189,6 +190,7 @@ namespace :pull_data do
         reactions.each do |reaction|
           emoji = Emoji.find_by(slack_name: reaction.name)
           if emoji.nil?
+            # 一部のデフォルト絵文字はslack_apiで取得できないので、nilとなる
             e = Emoji.new
             e.attributes = {
               slack_name: reaction.name,
@@ -197,8 +199,8 @@ namespace :pull_data do
             e.save!
             emoji = e
           end
-          r = Reaction.find_or_create_by!(emoji_id: emoji.id,
-                                          message_id: m.id)
+          r = Reaction.find_or_initialize_by(emoji: emoji,
+                                             message: m)
           r.attributes = { count: reaction.fetch('count') }
           r.save!
         end
