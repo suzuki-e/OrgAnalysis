@@ -7,10 +7,12 @@ def print_pretty(json)
 end
 
 def slack_client
+  return @client unless @client.nil?
+
   Slack.configure do |config|
     config.token = ENV['SLACK_API_TOKEN']
   end
-  Slack::Web::Client.new
+  @client = Slack::Web::Client.new
 end
 
 namespace :pull_data do
