@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_14_073205) do
+ActiveRecord::Schema.define(version: 2019_05_14_073352) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 2019_05_14_073205) do
   end
 
   create_table "emojis", force: :cascade do |t|
-    t.string "slack_id", null: false
+    t.string "slack_name", null: false
     t.string "url", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

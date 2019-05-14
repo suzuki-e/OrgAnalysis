@@ -31,7 +31,7 @@ namespace :pull_data do
     emojis = slack_client.emoji_list.emoji
     emojis.each.with_index(1) do |emoji, i|
       name, url = emoji
-      e = Emoji.find_or_initialize_by(slack_id: name)
+      e = Emoji.find_or_initialize_by(slack_name: name)
       e.attributes = {
         url: url
       }
@@ -187,11 +187,11 @@ namespace :pull_data do
 
         reactions = message.reactions
         reactions.each do |reaction|
-          emoji = Emoji.find_by(slack_id: reaction.name)
+          emoji = Emoji.find_by(slack_name: reaction.name)
           if emoji.nil?
             e = Emoji.new
             e.attributes = {
-              slack_id: reaction.name,
+              slack_name: reaction.name,
               url: ''
             }
             e.save!
