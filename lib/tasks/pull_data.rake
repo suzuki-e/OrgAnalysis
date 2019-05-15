@@ -141,7 +141,7 @@ namespace :pull_data do
     # 現在は、開始・終了時間でpagingをしている ref. https://api.slack.com/methods/conversations.history
     # 全てのメッセージ一覧を取得する場合は、こちら ref. https://api.slack.com/docs/pagination
     now = Time.now.strftime("%s.%6N")
-    oldest = Time.now..days_ago(3).strftime("%s.%6N")
+    oldest = Time.now.days_ago(3).strftime("%s.%6N")
     channels.each.with_index(1) do |channel, i|
       # 不必要に保存しない
       next unless channel.is_channel
@@ -195,7 +195,8 @@ namespace :pull_data do
           m = Message.find_or_initialize_by(channel_user: channel_user,
                                             ts: message.ts)
           m.attributes = {
-            text: message.text
+            text: message.text,
+            timestamp: Time.at(*m.ts.split('.').map(&:to_i)).strftime('%F %T.%6N')
           }
           m.save!
 
