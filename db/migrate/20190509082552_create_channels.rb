@@ -1,14 +1,14 @@
 class CreateChannels < ActiveRecord::Migration[5.2]
   def change
-    create_table :channels, id: false do |t|
-      t.string :id, null: false
-      t.string :name
-      t.integer :created
-      t.boolean :is_archived
-      t.string :name_normalized
-      t.boolean :is_private
-      t.string :topic
-      t.string :purpose
+    create_table :channels do |t|
+      t.string :slack_id, null: false
+      t.string :name, null: false
+      t.integer :created, null: false
+      t.boolean :is_archived, null: false, default: false
+      t.string :name_normalized, null: false
+      t.boolean :is_private, null: false, default: false
+      t.string :topic, null: false
+      t.string :purpose, null: false
 
       t.timestamps
     end
