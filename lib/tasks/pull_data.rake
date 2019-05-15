@@ -133,81 +133,101 @@ namespace :pull_data do
 
   task message: %i[environment channel_user] do
     puts 'Channel毎のメッセージ一覧、リアクション一覧の保存を開始しました'
-    per_channel_message_limit = 10
+    per_channel_message_limit = 1000 # max: 1000
     channels = slack_client.conversations_list(limit: 100_000,
                                                types: :public_channel,
                                                exclude_archived: true).channels
-    channels.each do |channel|
+    count = 0
+    # 現在は、開始・終了時間でpagingをしている ref. https://api.slack.com/methods/conversations.history
+    # 全てのメッセージ一覧を取得する場合は、こちら ref. https://api.slack.com/docs/pagination
+    now = Time.now.strftime("%s.%6N")
+    oldest = Time.now..days_ago(3).strftime("%s.%6N")
+    channels.each.with_index(1) do |channel, i|
       # 不必要に保存しない
       next unless channel.is_channel
       next if channel.is_private
       next if channel.is_archived
 
       c = Channel.find_by!(slack_id: channel.id)
+      latest = now
 
-      begin
-        messages_list = slack_client.conversations_history(channel: channel.id,
-                                                           limit: per_channel_message_limit).messages
-      rescue Slack::Web::Api::Errors::TooManyRequestsError => e
-        # Slack APIの Limitationに触れたらやり直し
-        # ref. https://api.slack.com/docs/rate-limits
-        puts e
-        puts 'Sleep 5 seconds.'
-        sleep(5)
-        retry
-      end
-
-      messages_list.each.with_index(1) do |message, i|
-        # Channel Joinなどの自動メッセージをスキップする
-        # ref. https://api.slack.com/events/message
-        next if message.key?('subtype')
-
-        user = find_user_by_slack_id(message.user)
-        # Botなど、UserDBに保存していないユーザーはスキップする
-        next if user.nil?
-
-        channel_user = ChannelUser.find_by(user: user, channel: c)
-        # 現在はチャンネルにJoinしていないけど、過去にJoinし、発言していた人向けに、channel_userレコードを作成
-        if channel_user.nil?
-          cu = ChannelUser.new
-          cu.attributes = {
-            user: user,
-            channel: c,
-            joined: false
-          }
-          cu.save!
-          channel_user = cu
+      puts "#{i}/#{channels.length}-#{c.name}"
+      # pagingのためのloop
+      loop do
+        begin
+          puts " #{Time.at(oldest.to_i)} to #{Time.at(latest.to_i)}"
+          history_response = slack_client.conversations_history(channel: channel.id,
+                                                                limit: per_channel_message_limit,
+                                                                latest: latest,
+                                                                oldest: oldest)
+          messages_list = history_response.messages
+        rescue Slack::Web::Api::Errors::TooManyRequestsError => e
+          # Slack APIの Limitationに触れたらやり直し
+          # ref. https://api.slack.com/docs/rate-limits
+          puts e
+          puts 'Sleep 5 seconds.'
+          sleep(5)
+          retry
         end
 
-        m = Message.find_or_initialize_by(channel_user: channel_user,
-                                          ts: message.ts)
-        m.attributes = {
-          text: message.text
-        }
-        m.save!
-        puts i if (i % 1000).zero?
+        messages_list.each do |message|
+          # Channel Joinなどの自動メッセージをスキップする
+          # ref. https://api.slack.com/events/message
+          next if message.key?('subtype')
 
-        # リアクション(emoji)がある場合、その情報を取得
-        next unless message.key?('reactions')
+          user = find_user_by_slack_id(message.user)
+          # Botなど、UserDBに保存していないユーザーはスキップする
+          next if user.nil?
 
-        reactions = message.reactions
-        reactions.each do |reaction|
-          emoji = Emoji.find_by(slack_name: reaction.name)
-          if emoji.nil?
-            # 一部のデフォルト絵文字はslack_apiで取得できないので、nilとなる
-            e = Emoji.new
-            e.attributes = {
-              slack_name: reaction.name,
-              url: ''
+          channel_user = ChannelUser.find_by(user: user, channel: c)
+          # 現在はチャンネルにJoinしていないけど、過去にJoinし、発言していた人向けに、channel_userレコードを作成
+          if channel_user.nil?
+            cu = ChannelUser.new
+            cu.attributes = {
+              user: user,
+              channel: c,
+              joined: false
             }
-            e.save!
-            emoji = e
+            cu.save!
+            channel_user = cu
           end
-          r = Reaction.find_or_initialize_by(emoji: emoji,
-                                             message: m)
-          r.attributes = { count: reaction.fetch('count') }
-          r.save!
+
+          m = Message.find_or_initialize_by(channel_user: channel_user,
+                                            ts: message.ts)
+          m.attributes = {
+            text: message.text
+          }
+          m.save!
+
+          count += 1
+          puts count if (count % 1000).zero?
+
+
+          # リアクション(emoji)がある場合、その情報を取得
+          next unless message.key?('reactions')
+
+          reactions = message.reactions
+          reactions.each do |reaction|
+            emoji = Emoji.find_by(slack_name: reaction.name)
+            if emoji.nil?
+              # 一部のデフォルト絵文字はslack_apiで取得できないので、nilとなる
+              e = Emoji.new
+              e.attributes = {
+                slack_name: reaction.name,
+                url: ''
+              }
+              e.save!
+              emoji = e
+            end
+            r = Reaction.find_or_initialize_by(emoji: emoji, message: m)
+            r.attributes = { count: reaction.fetch('count') }
+            r.save!
+          end
         end
+        break unless history_response.fetch(:has_more)
+        # has_moreがtrueの場合
+        # 取得した最も古いメッセージのtsをlatestへ設定することで、まだ取得していないメッセージを取得できる
+        latest = history_response.messages.last.ts
       end
     end
     puts 'Finished'
