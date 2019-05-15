@@ -15,6 +15,11 @@ def slack_client
   @client = Slack::Web::Client.new
 end
 
+def find_user_by_slack_id(slack_id)
+  @users ||= User.all.to_a
+  @users.find { |user| user.slack_id == slack_id }
+end
+
 namespace :pull_data do
   desc 'SlackAPIからデータを取得してローカルDBへ保存'
 
@@ -112,7 +117,7 @@ namespace :pull_data do
       member_ids = slack_client.conversations_members(channel: channel.id,
                                                       limit: 10000).members
       member_ids.each do |member_id|
-        user = User.find_by(slack_id: member_id)
+        user = find_user_by_slack_id(member_id)
         # Botなど、UserDBに保存していないユーザーの場合はnilになるのでスキップする
         next if user.nil?
 
@@ -157,8 +162,7 @@ namespace :pull_data do
         # ref. https://api.slack.com/events/message
         next if message.key?('subtype')
 
-        # Userモデルからidを取得。
-        user = User.find_by(slack_id: message.user)
+        user = find_user_by_slack_id(message.user)
         # Botなど、UserDBに保存していないユーザーはスキップする
         next if user.nil?
 
