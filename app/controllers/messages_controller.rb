@@ -6,6 +6,12 @@ class MessagesController < ApplicationController
   def index
     @messages = Message.all
     @groupdates = @messages.group_by_hour(:timestamp).count
+
+    labels = @groupdates.keys.map { |ts| ts.strftime('%m/%d %k:%M') }
+    data = @groupdates.values
+
+    @line_data = ChartjsLine.new(data: data,
+                                 labels: labels).with_default_style
   end
 
   # GET /messages/1
