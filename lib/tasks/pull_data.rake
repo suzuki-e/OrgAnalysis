@@ -20,6 +20,23 @@ def find_user_by_slack_id(slack_id)
   @users.find { |user| user.slack_id == slack_id }
 end
 
+def channel_list
+  return @channels unless @channels.nil?
+
+  @channels = []
+  cursor = ''
+  loop do
+    response = slack_client.conversations_list(limit: 1000,
+                                               types: :public_channel,
+                                               exclude_archived: true,
+                                               cursor: cursor)
+    @channels.concat(response.channels)
+    cursor = response.response_metadata.next_cursor
+    break if cursor == ''
+  end
+  @channels
+end
+
 namespace :pull_data do
   desc 'SlackAPIからデータを取得してローカルDBへ保存'
 
@@ -75,10 +92,8 @@ namespace :pull_data do
 
   task channel: :environment do
     puts 'Channelの保存を開始しました'
-    channels = slack_client.conversations_list(limit: 100_000,
-                                               types: :public_channel,
-                                               exclude_archived: true).channels
-    channels.each.with_index(1) do |channel, i|
+
+    channel_list.each.with_index(1) do |channel, i|
       # 不必要に保存しない
       # TODO: チャンネルがPublicからPrivateになったり、Archiveされた場合のトラックができない。
       next unless channel.is_channel
@@ -103,11 +118,7 @@ namespace :pull_data do
 
   task channel_user: %i[environment channel user] do
     puts 'Channel毎のユーザ一覧の保存を開始しました'
-    # TODO: pagination
-    channels = slack_client.conversations_list(limit: 100000,
-                                               types: :public_channel,
-                                               exclude_archived: true).channels
-    channels.each.with_index(1) do |channel, i|
+    channel_list.each.with_index(1) do |channel, i|
       # 不必要に保存しない
       next unless channel.is_channel
       next if channel.is_private
@@ -134,15 +145,12 @@ namespace :pull_data do
   task message: %i[environment channel_user] do
     puts 'Channel毎のメッセージ一覧、リアクション一覧の保存を開始しました'
     per_channel_message_limit = 1000 # max: 1000
-    channels = slack_client.conversations_list(limit: 100_000,
-                                               types: :public_channel,
-                                               exclude_archived: true).channels
     msg_count = 0
     # 現在は、開始・終了時間でpagingをしている ref. https://api.slack.com/methods/conversations.history
     # 全てのメッセージ一覧を取得する場合は、こちら ref. https://api.slack.com/docs/pagination
     now = Time.now.strftime("%s.%6N")
     oldest = Time.now.days_ago(3).strftime("%s.%6N")
-    channels.each.with_index(1) do |channel, i|
+    channel_list.each.with_index(1) do |channel, i|
       # 不必要に保存しない
       next unless channel.is_channel
       next if channel.is_private
@@ -151,7 +159,7 @@ namespace :pull_data do
       c = Channel.find_by!(slack_id: channel.id)
       latest = now
 
-      puts "#{i}/#{channels.length}-#{c.name}"
+      puts "#{i}/#{channel_list.length}-#{c.name}"
 
       # 特定期間のメッセージを全取得
       messages_list = []
