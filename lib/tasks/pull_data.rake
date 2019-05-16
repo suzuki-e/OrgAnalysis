@@ -133,31 +133,53 @@ namespace :pull_data do
 
   task message: %i[environment channel_user] do
     puts 'Channel毎のメッセージ一覧、リアクション一覧の保存を開始しました'
-    per_channel_message_limit = 10
+    per_channel_message_limit = 1000 # max: 1000
     channels = slack_client.conversations_list(limit: 100_000,
                                                types: :public_channel,
                                                exclude_archived: true).channels
-    channels.each do |channel|
+    msg_count = 0
+    # 現在は、開始・終了時間でpagingをしている ref. https://api.slack.com/methods/conversations.history
+    # 全てのメッセージ一覧を取得する場合は、こちら ref. https://api.slack.com/docs/pagination
+    now = Time.now.strftime("%s.%6N")
+    oldest = Time.now.days_ago(3).strftime("%s.%6N")
+    channels.each.with_index(1) do |channel, i|
       # 不必要に保存しない
       next unless channel.is_channel
       next if channel.is_private
       next if channel.is_archived
 
       c = Channel.find_by!(slack_id: channel.id)
+      latest = now
 
-      begin
-        messages_list = slack_client.conversations_history(channel: channel.id,
-                                                           limit: per_channel_message_limit).messages
-      rescue Slack::Web::Api::Errors::TooManyRequestsError => e
-        # Slack APIの Limitationに触れたらやり直し
-        # ref. https://api.slack.com/docs/rate-limits
-        puts e
-        puts 'Sleep 5 seconds.'
-        sleep(5)
-        retry
+      puts "#{i}/#{channels.length}-#{c.name}"
+
+      # 特定期間のメッセージを全取得
+      messages_list = []
+      loop do
+        begin
+          puts " #{Time.at(oldest.to_i)} to #{Time.at(latest.to_i)}"
+          history_response = slack_client.conversations_history(channel: channel.id,
+                                                                limit: per_channel_message_limit,
+                                                                latest: latest,
+                                                                oldest: oldest)
+          messages_list.concat(history_response.messages)
+        rescue Slack::Web::Api::Errors::TooManyRequestsError => e
+          # Slack APIの Limitationに触れたらやり直し
+          # ref. https://api.slack.com/docs/rate-limits
+          puts e
+          puts 'Sleep 5 seconds.'
+          sleep(5)
+          retry
+        end
+        break unless history_response.fetch(:has_more)
+
+        # has_moreがtrueの場合
+        # 取得した最も古いメッセージのtsをlatestへ設定することで、まだ取得していないメッセージを取得できる
+        latest = history_response.messages.last.ts
       end
 
-      messages_list.each.with_index(1) do |message, i|
+      # メッセージに紐づく情報をDBへ保存
+      messages_list.each do |message|
         # Channel Joinなどの自動メッセージをスキップする
         # ref. https://api.slack.com/events/message
         next if message.key?('subtype')
@@ -182,10 +204,14 @@ namespace :pull_data do
         m = Message.find_or_initialize_by(channel_user: channel_user,
                                           ts: message.ts)
         m.attributes = {
-          text: message.text
+          text: message.text,
+          timestamp: Time.at(*m.ts.split('.').map(&:to_i)).in_time_zone('UTC').strftime('%F %T.%6N')
         }
         m.save!
-        puts i if (i % 1000).zero?
+
+        msg_count += 1
+        puts msg_count if (msg_count % 1000).zero?
+
 
         # リアクション(emoji)がある場合、その情報を取得
         next unless message.key?('reactions')
@@ -203,8 +229,7 @@ namespace :pull_data do
             e.save!
             emoji = e
           end
-          r = Reaction.find_or_initialize_by(emoji: emoji,
-                                             message: m)
+          r = Reaction.find_or_initialize_by(emoji: emoji, message: m)
           r.attributes = { count: reaction.fetch('count') }
           r.save!
         end
