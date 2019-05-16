@@ -5,6 +5,24 @@
 <table>
   <thead>
     <tr>
+      <th>unit</th>
+      <th>count</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @groupdates.each do |unit, count| %>
+      <tr>
+        <td><%= unit %></td>
+        <td><%= count %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
       <th>Channel user</th>
       <th>Text</th>
       <th>Ts</th>
