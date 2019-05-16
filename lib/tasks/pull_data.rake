@@ -136,8 +136,9 @@ namespace :pull_data do
         ChannelUser.find_or_create_by!(user: user,
                                        channel: c,
                                        joined: true)
-        puts i if (i % 1000).zero?
+
       end
+      puts i if (i % 1000).zero?
     end
     puts 'Finished'
   end
