@@ -205,7 +205,7 @@ namespace :pull_data do
                                           ts: message.ts)
         m.attributes = {
           text: message.text,
-          timestamp: Time.at(*m.ts.split('.').map(&:to_i)).strftime('%F %T.%6N')
+          timestamp: Time.at(*m.ts.split('.').map(&:to_i)).in_time_zone('UTC').strftime('%F %T.%6N')
         }
         m.save!
 
