@@ -11,6 +11,20 @@
   </head>
 
   <body>
-    <%= yield %>
+    <header>
+      <div>
+        <nav>
+          <ul>
+            <li><%= link_to "User", users_path %></li>
+            <li><%= link_to "Channel", channels_path %></li>
+            <li><%= link_to "Message", messages_path %></li>
+            <li><%= link_to "Emoji", emojis_path %></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    <div class="container">
+      <%= yield %>
+    </div>
   </body>
 </html>
