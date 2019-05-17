@@ -40,12 +40,12 @@ end
 namespace :pull_data do
   desc 'SlackAPIからデータを取得してローカルDBへ保存'
 
-  task all: :environment do
-    Rake::Task['pull_data:emoji'].execute
-    Rake::Task['pull_data:user'].execute
-    Rake::Task['pull_data:channel'].execute
-    Rake::Task['pull_data:channel_user'].execute
-    Rake::Task['pull_data:message'].execute
+  task :all, ['days_ago'] => :environment do |_, args|
+    Rake::Task['pull_data:emoji'].invoke
+    Rake::Task['pull_data:user'].invoke
+    Rake::Task['pull_data:channel'].invoke
+    Rake::Task['pull_data:channel_user'].invoke
+    Rake::Task['pull_data:message'].invoke(args['days_ago'])
   end
 
   task emoji: :environment do
@@ -143,14 +143,19 @@ namespace :pull_data do
     puts 'Finished'
   end
 
-  task message: %i[environment channel_user] do
+  task :message, ['days_ago'] => %i[environment channel_user] do |_, args|
     puts 'Channel毎のメッセージ一覧、リアクション一覧の保存を開始しました'
     per_channel_message_limit = 1000 # max: 1000
     msg_count = 0
     # 現在は、開始・終了時間でpagingをしている ref. https://api.slack.com/methods/conversations.history
     # 全てのメッセージ一覧を取得する場合は、こちら ref. https://api.slack.com/docs/pagination
-    now = Time.now.strftime("%s.%6N")
-    oldest = Time.now.days_ago(3).strftime("%s.%6N")
+    days_ago = args[:days_ago].to_i
+    days_ago = 7 if days_ago.zero?
+    now_tmp = Time.now.in_time_zone('UTC')
+    oldest = now_tmp.days_ago(days_ago).strftime("%s.%6N")
+    now = now_tmp.strftime("%s.%6N")
+
+    puts "Retrieve data from #{days_ago} days_ago."
     channel_list.each.with_index(1) do |channel, i|
       # 不必要に保存しない
       next unless channel.is_channel
