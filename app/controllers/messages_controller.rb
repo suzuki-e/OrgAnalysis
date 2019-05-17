@@ -7,9 +7,7 @@ class MessagesController < ApplicationController
     @messages = Message.all
     @groupdates = @messages.group_by_hour(:timestamp).count
 
-    labels = @groupdates.keys.map { |ts| ts.strftime('%m/%d %k:%M') }
-    data = @groupdates.values
-
+    labels, data = chart_data(@groupdates)
     @line_data = ChartjsLine.new(data: data,
                                  labels: labels).with_default_style
   end
@@ -78,5 +76,9 @@ class MessagesController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def message_params
     params.require(:message).permit(:channel_user_id, :text, :ts)
+  end
+
+  def chart_data(groupdates)
+    [groupdates.keys.map { |ts| ts.strftime('%m/%d %k:%M') }, groupdates.values]
   end
 end
