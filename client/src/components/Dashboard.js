@@ -17,8 +17,10 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import {mainListItems, secondaryListItems} from './listItems';
 import SimpleLineChart from './SimpleLineChart';
 import SimpleTable from './SimpleTable';
+import axios from 'axios'
 
 const drawerWidth = 240;
+const ENDPONT = 'http://localhost:3000';
 
 const styles = theme => ({
   root: {
@@ -98,9 +100,25 @@ const styles = theme => ({
 });
 
 class Dashboard extends React.Component {
-  state = {
-    open: true,
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: true,
+      groupdate: {}
+    };
+    this.getData()
+  }
+
+  getData() {
+    axios
+      .get(ENDPONT + '/messages/groupdate')
+      .then(results => {
+        const data = results.data;
+        this.setState({
+          groupdate: data
+        });
+      });
+  }
 
   handleDrawerOpen = () => {
     this.setState({open: true});
@@ -168,10 +186,10 @@ class Dashboard extends React.Component {
         <main className={classes.content}>
           <div className={classes.appBarSpacer}/>
           <Typography variant="h4" gutterBottom component="h2">
-            Orders
+            メッセージ数
           </Typography>
           <Typography component="div" className={classes.chartContainer}>
-            <SimpleLineChart/>
+            <SimpleLineChart data={this.state.groupdate}/>
           </Typography>
           <Typography variant="h4" gutterBottom component="h2">
             Products
