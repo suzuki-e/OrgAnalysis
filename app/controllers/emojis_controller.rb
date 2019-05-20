@@ -4,7 +4,7 @@ class EmojisController < ApplicationController
   # GET /emojis
   # GET /emojis.json
   def index
-    @emojis = Emoji.all
+    @emojis = Emoji.all.page(params[:page])
   end
 
   # GET /emojis/1
@@ -62,13 +62,14 @@ class EmojisController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_emoji
-      @emoji = Emoji.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def emoji_params
-      params.require(:emoji).permit(:url)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_emoji
+    @emoji = Emoji.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def emoji_params
+    params.require(:emoji).permit(:url)
+  end
 end

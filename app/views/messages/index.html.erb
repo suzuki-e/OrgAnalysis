@@ -6,24 +6,6 @@
 <table>
   <thead>
     <tr>
-      <th>unit</th>
-      <th>count</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @groupdates.each do |unit, count| %>
-      <tr>
-        <td><%= unit %></td>
-        <td><%= count %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<table>
-  <thead>
-    <tr>
       <th>Channel user</th>
       <th>Text</th>
       <th>Ts</th>
@@ -31,8 +13,9 @@
     </tr>
   </thead>
 
+  <%= paginate @messages_list %>
   <tbody>
-    <% @messages.each do |message| %>
+    <% @messages_list.each do |message| %>
       <tr>
         <td><%= message.channel_user %></td>
         <td><%= message.text %></td>

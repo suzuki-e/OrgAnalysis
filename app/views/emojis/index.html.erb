@@ -4,23 +4,24 @@
 
 <table>
   <thead>
-  <tr>
-    <th>preview</th>
-    <th>Url</th>
-    <th colspan="3"></th>
-  </tr>
+    <tr>
+      <th>preview</th>
+      <th>Url</th>
+      <th colspan="3"></th>
+    </tr>
   </thead>
 
+  <%= paginate @emojis %>
   <tbody>
-  <% @emojis.each do |emoji| %>
-    <tr>
-      <td><img src=<%= emoji.url %> alt="" width="" height="" border=""/></td>
-      <td><%= emoji.url %></td>
-      <td><%= link_to 'Show', emoji %></td>
-      <td><%= link_to 'Edit', edit_emoji_path(emoji) %></td>
-      <td><%= link_to 'Destroy', emoji, method: :delete, data: {confirm: 'Are you sure?'} %></td>
-    </tr>
-  <% end %>
+    <% @emojis.each do |emoji| %>
+      <tr>
+        <td><img src=<%= emoji.url %> alt="" width="" height="" border=""/></td>
+        <td><%= emoji.url %></td>
+        <td><%= link_to 'Show', emoji %></td>
+        <td><%= link_to 'Edit', edit_emoji_path(emoji) %></td>
+        <td><%= link_to 'Destroy', emoji, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
   </tbody>
 </table>
 

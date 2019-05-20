@@ -4,8 +4,10 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.json
   def index
-    @messages = Message.all
-    @groupdates = @messages.group_by_hour(:timestamp).count
+    messages = Message.all
+    @messages_list = messages.page(params[:page])
+
+    @groupdates = messages.group_by_hour(:timestamp).count
 
     labels, data = chart_data(@groupdates)
     @line_data = ChartjsLine.new(data: data,

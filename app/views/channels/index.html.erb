@@ -4,37 +4,38 @@
 
 <table>
   <thead>
-  <tr>
-    <th>Name</th>
-    <th>Created</th>
-    <th>Message count</th>
-    <th>User count</th>
-    <th>Is archived</th>
-    <th>Name normalized</th>
-    <th>Is private</th>
-    <th>Topic</th>
-    <th>Purpose</th>
-    <th colspan="3"></th>
-  </tr>
+    <tr>
+      <th>Name</th>
+      <th>Created</th>
+      <th>Message count</th>
+      <th>User count</th>
+      <th>Is archived</th>
+      <th>Name normalized</th>
+      <th>Is private</th>
+      <th>Topic</th>
+      <th>Purpose</th>
+      <th colspan="3"></th>
+    </tr>
   </thead>
 
+  <%= paginate @channels %>
   <tbody>
-  <% @channels.each do |channel| %>
-    <tr>
-      <td><%= channel.name %></td>
-      <td><%= channel.created %></td>
-      <td><%= channel.messages.count %></td>
-      <td><%= channel.users.count %></td>
-      <td><%= channel.is_archived %></td>
-      <td><%= channel.name_normalized %></td>
-      <td><%= channel.is_private %></td>
-      <td><%= channel.topic %></td>
-      <td><%= channel.purpose %></td>
-      <td><%= link_to 'Show', channel %></td>
-      <td><%= link_to 'Edit', edit_channel_path(channel) %></td>
-      <td><%= link_to 'Destroy', channel, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-    </tr>
-  <% end %>
+    <% @channels.each do |channel| %>
+      <tr>
+        <td><%= channel.name %></td>
+        <td><%= channel.created %></td>
+        <td><%= channel.messages.count %></td>
+        <td><%= channel.users.count %></td>
+        <td><%= channel.is_archived %></td>
+        <td><%= channel.name_normalized %></td>
+        <td><%= channel.is_private %></td>
+        <td><%= channel.topic %></td>
+        <td><%= channel.purpose %></td>
+        <td><%= link_to 'Show', channel %></td>
+        <td><%= link_to 'Edit', edit_channel_path(channel) %></td>
+        <td><%= link_to 'Destroy', channel, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
   </tbody>
 </table>
 
