@@ -1,6 +1,6 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins 'localhost:3001'
+    origins 'localhost:3000'
 
     # ref. https://qiita.com/sugo/items/9c5f9cc5d88e6d7efa2d
     # 全てのリソースに対して次のものを許可する
@@ -13,4 +13,3 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
              expose: []
   end
 end
-

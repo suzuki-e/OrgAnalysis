@@ -20,7 +20,7 @@ import SimpleTable from './SimpleTable';
 import axios from 'axios'
 
 const drawerWidth = 240;
-const ENDPONT = 'http://localhost:3000';
+const ENDPOINT_BASE = process.env.REACT_APP_API_ENDPOINT_BASE;
 
 const styles = theme => ({
   root: {
@@ -106,12 +106,12 @@ class Dashboard extends React.Component {
       open: true,
       groupdate: {}
     };
-    this.getData()
+    this.getData();
   }
 
   getData() {
     axios
-      .get(ENDPONT + '/messages/groupdate')
+      .get(ENDPOINT_BASE + '/messages/groupdate')
       .then(results => {
         const data = results.data;
         this.setState({
