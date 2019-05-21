@@ -1,24 +1,33 @@
-# README
+# OrgAnalisis
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## セットアップ方法
 
-Things you may want to cover:
+以下のソフトウェアをインストールしておく必要があります。
 
-* Ruby version
+- Ruby 2.6.2
+- PostgreSQL
+- Yarn
+- Node >=8.10
 
-* System dependencies
+APIサーバを起動するために以下のコマンドを実行します。
 
-* Configuration
+```bash
+$ git clone https://github.com/machisuke/OrgAnalisis.git
+$ cd OrgAnalisis
+$ bundle install
+$ bundle exec rails db:setup
+$ bundle exec rails server -p 4000
+```
 
-* Database creation
+実行後、[http://localhost:4000](http://localhost:4000) が表示されれば起動成功です。
 
-* Database initialization
+また、フロントエンドのサーバを起動するために以下のコマンドを実行します。
 
-* How to run the test suite
+```bash
+$ cd path/to/OrgAnalisis
+$ cd client
+$ yarn
+$ yarn start
+```
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+実行後、[http://localhost:3000](http://localhost:3000) が表示されれば起動成功です。
