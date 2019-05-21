@@ -1,0 +1,48 @@
+import React from "react";
+import Typography from "@material-ui/core/Typography";
+import SimpleLineChart from "../../components/SimpleLineChart";
+import SimpleTable from "../../components/SimpleTable";
+import axios from "axios";
+
+const ENDPOINT_BASE = process.env.REACT_APP_API_ENDPOINT_BASE;
+
+export default class TopPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      groupdate: {}
+    };
+    this.getData()
+  }
+
+  getData() {
+    axios
+      .get(ENDPOINT_BASE + '/messages/groupdate')
+      .then(results => {
+        const data = results.data;
+        this.setState({
+          groupdate: data
+        });
+      });
+  }
+
+  render() {
+    const {classes} = this.props;
+    return (
+      <main>
+        <Typography variant="h4" gutterBottom component="h2">
+          メッセージ数
+        </Typography>
+        <Typography component="div" className={classes.chartContainer}>
+          <SimpleLineChart data={this.state.groupdate}/>
+        </Typography>
+        <Typography variant="h4" gutterBottom component="h2">
+          Products
+        </Typography>
+        <div className={classes.tableContainer}>
+          <SimpleTable/>
+        </div>
+      </main>
+    );
+  }
+}
