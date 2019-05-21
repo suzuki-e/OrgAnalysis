@@ -63,4 +63,5 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'groupdate'
 gem 'kaminari'
+gem 'rack-cors'
 gem 'slack-ruby-client'
