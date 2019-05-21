@@ -6,6 +6,10 @@ import PropTypes from "prop-types";
 
 const ENDPOINT_BASE = process.env.REACT_APP_API_ENDPOINT_BASE;
 
+const columnNames = [
+  'name', 'topic', 'purpose', 'member_count', 'message_count'
+];
+
 export default class ChannelTop extends React.Component {
   constructor(props) {
     super(props);
@@ -17,7 +21,7 @@ export default class ChannelTop extends React.Component {
 
   getData() {
     axios
-      .get(ENDPOINT_BASE + '/channels')
+      .get(ENDPOINT_BASE + '/channels.json')
       .then(results => {
         const data = results.data;
         this.setState({
@@ -34,7 +38,7 @@ export default class ChannelTop extends React.Component {
           チャンネル一覧
         </Typography>
         <div className={classes.tableContainer}>
-          <SimpleTable data={this.state.channels}/>
+          <SimpleTable data={this.state.channels} columnNames={columnNames}/>
         </div>
       </main>
     );

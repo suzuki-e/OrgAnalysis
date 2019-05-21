@@ -18,46 +18,43 @@ const styles = {
   },
 };
 
-let id = 0;
-
-function createData(name, calories, fat, carbs, protein) {
-  id += 1;
-  return {id, name, calories, fat, carbs, protein};
-}
-
-const data = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
+const default_data = [
+  {
+    id: 'sample_data',
+    sample_a: 'sample_data_a',
+    sample_b: 'sample_data_b',
+    sample_c: 'sample_data_c',
+    sample_d: 'sample_data_d',
+    sample_e: 'sample_data_e'
+  }
 ];
 
 function SimpleTable(props) {
-  const {classes} = props;
-
+  let {classes, data, columnNames} = props;
+  if (columnNames === undefined) {
+    columnNames = ['sample_a', 'sample_b', 'sample_c', 'sample_d', 'sample_e']
+  }
+  if (data === undefined || !data.length) {
+    data = default_data
+  }
   return (
     <Paper className={classes.root}>
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat (g)</TableCell>
-            <TableCell align="right">Carbs (g)</TableCell>
-            <TableCell align="right">Protein (g)</TableCell>
+            {columnNames.map(columnName => (
+              <TableCell>{columnName}</TableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
           {data.map(n => (
             <TableRow key={n.id}>
-              <TableCell component="th" scope="row">
-                {n.name}
-              </TableCell>
-              <TableCell align="right">{n.calories}</TableCell>
-              <TableCell align="right">{n.fat}</TableCell>
-              <TableCell align="right">{n.carbs}</TableCell>
-              <TableCell align="right">{n.protein}</TableCell>
+              {columnNames.map(columnName => (
+                <TableCell component="th" scope="row">
+                  {n[columnName]}
+                </TableCell>
+              ))}
             </TableRow>
           ))}
         </TableBody>
@@ -68,6 +65,8 @@ function SimpleTable(props) {
 
 SimpleTable.propTypes = {
   classes: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired,
+  columnNames: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(SimpleTable);

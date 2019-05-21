@@ -5,6 +5,7 @@ class ChannelsController < ApplicationController
   # GET /channels.json
   def index
     @channels = Channel.all.page(params[:page])
+    render json: @channels
   end
 
   # GET /channels/1
