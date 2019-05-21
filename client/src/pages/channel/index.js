@@ -1,28 +1,27 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
-import SimpleLineChart from "../../components/SimpleLineChart";
 import SimpleTable from "../../components/SimpleTable";
 import axios from "axios";
 import PropTypes from "prop-types";
 
 const ENDPOINT_BASE = process.env.REACT_APP_API_ENDPOINT_BASE;
 
-export default class TopPage extends React.Component {
+export default class ChannelTop extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      groupdate: {}
+      channels: {}
     };
     this.getData()
   }
 
   getData() {
     axios
-      .get(ENDPOINT_BASE + '/messages/groupdate')
+      .get(ENDPOINT_BASE + '/channels')
       .then(results => {
         const data = results.data;
         this.setState({
-          groupdate: data
+          channels: data
         });
       });
   }
@@ -32,23 +31,16 @@ export default class TopPage extends React.Component {
     return (
       <main>
         <Typography variant="h4" gutterBottom component="h2">
-          メッセージ数
-        </Typography>
-        <Typography component="div" className={classes.chartContainer}>
-          <SimpleLineChart data={this.state.groupdate}/>
-        </Typography>
-        <Typography variant="h4" gutterBottom component="h2">
-          Products
+          チャンネル一覧
         </Typography>
         <div className={classes.tableContainer}>
-          <SimpleTable/>
+          <SimpleTable data={this.state.channels}/>
         </div>
       </main>
     );
   }
 }
 
-TopPage.propTypes = {
+ChannelTop.propTypes = {
   classes: PropTypes.object.isRequired,
 };
-

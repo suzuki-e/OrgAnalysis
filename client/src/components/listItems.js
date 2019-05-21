@@ -4,67 +4,71 @@ import ListItemIcon from '@material-ui/core/ListItemIcon/index';
 import ListItemText from '@material-ui/core/ListItemText/index';
 import ListSubheader from '@material-ui/core/ListSubheader/index';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import AlternateEmail from '@material-ui/icons/AlternateEmail';
 import PeopleIcon from '@material-ui/icons/People';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import LayersIcon from '@material-ui/icons/Layers';
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import Chat from '@material-ui/icons/Chat';
+import Mood from '@material-ui/icons/Mood';
+import Settings from '@material-ui/icons/Settings';
+import {Link} from 'react-router-dom'
+
+const linkStyle = {
+  textDecoration: 'none'
+};
 
 export const mainListItems = (
   <div>
-    <ListItem button>
-      <ListItemIcon>
-        <DashboardIcon/>
-      </ListItemIcon>
-      <ListItemText primary="Dashboard"/>
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <ShoppingCartIcon/>
-      </ListItemIcon>
-      <ListItemText primary="Orders"/>
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <PeopleIcon/>
-      </ListItemIcon>
-      <ListItemText primary="Customers"/>
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <BarChartIcon/>
-      </ListItemIcon>
-      <ListItemText primary="Reports"/>
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <LayersIcon/>
-      </ListItemIcon>
-      <ListItemText primary="Integrations"/>
-    </ListItem>
+    <Link to="/" style={linkStyle}>
+      <ListItem button>
+        <ListItemIcon>
+          <DashboardIcon/>
+        </ListItemIcon>
+        <ListItemText primary="Dashboard"/>
+      </ListItem>
+    </Link>
+    <Link to="/users" style={linkStyle}>
+      <ListItem button>
+        <ListItemIcon>
+          <PeopleIcon/>
+        </ListItemIcon>
+        <ListItemText primary="Users"/>
+      </ListItem>
+    </Link>
+    <Link to="/channels" style={linkStyle}>
+      <ListItem button>
+        <ListItemIcon>
+          <AlternateEmail/>
+        </ListItemIcon>
+        <ListItemText primary="Channels"/>
+      </ListItem>
+    </Link>
+    <Link to="/messages" style={linkStyle}>
+      <ListItem button>
+        <ListItemIcon>
+          <Chat/>
+        </ListItemIcon>
+        <ListItemText primary="Messages"/>
+      </ListItem>
+    </Link>
+    <Link to="/emojis" style={linkStyle}>
+      <ListItem button>
+        <ListItemIcon>
+          <Mood/>
+        </ListItemIcon>
+        <ListItemText primary="Emojis"/>
+      </ListItem>
+    </Link>
   </div>
 );
 
 export const secondaryListItems = (
   <div>
-    <ListSubheader inset>Saved reports</ListSubheader>
-    <ListItem button>
-      <ListItemIcon>
-        <AssignmentIcon/>
-      </ListItemIcon>
-      <ListItemText primary="Current month"/>
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <AssignmentIcon/>
-      </ListItemIcon>
-      <ListItemText primary="Last quarter"/>
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <AssignmentIcon/>
-      </ListItemIcon>
-      <ListItemText primary="Year-end sale"/>
-    </ListItem>
+    <Link to="/setting" style={linkStyle}>
+      <ListItem button>
+        <ListItemIcon>
+          <Settings/>
+        </ListItemIcon>
+        <ListItemText primary="Settings"/>
+      </ListItem>
+    </Link>
   </div>
 );

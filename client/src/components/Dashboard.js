@@ -15,8 +15,13 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import {mainListItems, secondaryListItems} from './listItems';
-import {Route} from "react-router-dom"
+import {Route, Switch} from "react-router-dom"
 import TopPage from '../pages/top/index.js'
+import ChannelTop from "../pages/channel";
+import UserTop from "../pages/user";
+import MessageTop from "../pages/message";
+import EmojiTop from "../pages/emoji";
+import SettingTop from "../pages/setting";
 
 const drawerWidth = 240;
 
@@ -141,10 +146,10 @@ class Dashboard extends React.Component {
               noWrap
               className={classes.title}
             >
-              Dashboard
+              OrgAnalisis
             </Typography>
             <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
+              <Badge badgeContent={0} color="secondary">
                 <NotificationsIcon/>
               </Badge>
             </IconButton>
@@ -169,9 +174,27 @@ class Dashboard extends React.Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer}/>
-          <Route exact path='/'>
-            <TopPage classes={classes}/>
-          </Route>
+          <Switch>
+            <Route exact path='/'>
+              <TopPage classes={classes}/>
+            </Route>
+            <Route path='/users'>
+              <UserTop classes={classes}/>
+            </Route>
+            <Route path='/channels'>
+              <ChannelTop classes={classes}/>
+            </Route>
+            <Route path='/messages'>
+              <MessageTop classes={classes}/>
+            </Route>
+            <Route path='/emojis'>
+              <EmojiTop classes={classes}/>
+            </Route>
+            <Route path='/settings'>
+              <SettingTop classes={classes}/>
+            </Route>
+            <Route render={() => <h1>Not Found.</h1>}/>
+          </Switch>
         </main>
       </div>
     );
