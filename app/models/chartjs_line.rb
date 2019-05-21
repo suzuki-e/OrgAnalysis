@@ -1,9 +1,10 @@
 class ChartjsLine
   include ActiveModel::Model
-  attr_accessor :data, :labels
+  attr_accessor :groupdates
 
   # ref. https://www.chartjs.org/docs/latest/charts/line.html
   def with_default_style
+    labels, data = chart_data(groupdates)
     {
       labels: labels,
       datasets: [
@@ -30,5 +31,11 @@ class ChartjsLine
         }
       ]
     }
+  end
+
+  private
+
+  def chart_data(groupdates)
+    [groupdates.keys.map { |ts| ts.strftime('%m/%d %k:%M') }, groupdates.values]
   end
 end

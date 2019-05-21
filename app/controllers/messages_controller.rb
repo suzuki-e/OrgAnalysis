@@ -12,8 +12,7 @@ class MessagesController < ApplicationController
 
   def groupdate
     groupdates = Message.all.group_by_hour(:timestamp).count
-    labels, data = chart_data(groupdates)
-    render json: ChartjsLine.new(data: data, labels: labels).with_default_style
+    render json: ChartjsLine.new(groupdates: groupdates).with_default_style
   end
 
   # GET /messages/1
@@ -82,7 +81,4 @@ class MessagesController < ApplicationController
     params.require(:message).permit(:channel_user_id, :text, :ts)
   end
 
-  def chart_data(groupdates)
-    [groupdates.keys.map { |ts| ts.strftime('%m/%d %k:%M') }, groupdates.values]
-  end
 end
