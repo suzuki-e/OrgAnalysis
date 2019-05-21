@@ -36,6 +36,6 @@ class ChartjsLine
   private
 
   def chart_data(groupdates)
-    [groupdates.keys.map { |ts| ts.strftime('%m/%d %k:%M') }, groupdates.values]
+    [groupdates.keys.map { |ts| I18n.l(ts, format: :short) }, groupdates.values]
   end
 end
