@@ -1,8 +1,8 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
-import SimpleTable from "../../components/SimpleTable";
 import axios from "axios";
 import PropTypes from "prop-types";
+import SimpleLinkedTable from "../../components/SimpleLinkedTable";
 
 const ENDPOINT_BASE = process.env.REACT_APP_API_ENDPOINT_BASE;
 
@@ -14,9 +14,12 @@ export default class ChannelTop extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      channels: {}
+      channels: {},
+      link_paths: {}
     };
-    this.getData()
+    this.getData();
+    this.handleClick = this.handleClick.bind(this)
+    console.log(props)
   }
 
   getData() {
@@ -24,10 +27,16 @@ export default class ChannelTop extends React.Component {
       .get(ENDPOINT_BASE + '/channels.json')
       .then(results => {
         const data = results.data;
+        const link_paths = data.map(c => `/channels/${c.id}`);
         this.setState({
-          channels: data
+          channels: data,
+          link_paths: link_paths,
         });
       });
+  }
+
+  handleClick(path) {
+    this.props.history.push(path);
   }
 
   render() {
@@ -38,7 +47,12 @@ export default class ChannelTop extends React.Component {
           チャンネル一覧
         </Typography>
         <div className={classes.tableContainer}>
-          <SimpleTable data={this.state.channels} columnNames={columnNames}/>
+          <SimpleLinkedTable
+            data={this.state.channels}
+            columnNames={columnNames}
+            link_paths={this.state.link_paths}
+            handleClick={this.handleClick}
+          />
         </div>
       </main>
     );
@@ -47,4 +61,5 @@ export default class ChannelTop extends React.Component {
 
 ChannelTop.propTypes = {
   classes: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };

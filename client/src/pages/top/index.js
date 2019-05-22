@@ -18,7 +18,7 @@ export default class TopPage extends React.Component {
 
   getData() {
     axios
-      .get(ENDPOINT_BASE + '/messages/groupdate')
+      .get(ENDPOINT_BASE + '/message_groupdate')
       .then(results => {
         const data = results.data;
         this.setState({
