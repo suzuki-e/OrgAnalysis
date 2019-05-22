@@ -35,7 +35,9 @@ export default class TopPage extends React.Component {
           メッセージ数
         </Typography>
         <Typography component="div" className={classes.chartContainer}>
-          <SimpleLineChart data={this.state.groupdate}/>
+          <SimpleLineChart
+            data={this.state.groupdate.data}
+            labels={this.state.groupdate.labels}/>
         </Typography>
         <Typography variant="h4" gutterBottom component="h2">
           Products
