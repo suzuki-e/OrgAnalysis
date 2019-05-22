@@ -19,7 +19,6 @@ export default class ChannelTop extends React.Component {
     };
     this.getData();
     this.handleClick = this.handleClick.bind(this)
-    console.log(props)
   }
 
   getData() {

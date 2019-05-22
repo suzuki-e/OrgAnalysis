@@ -32,7 +32,6 @@ const default_style = (data, labels) => ({
 class SimpleLineChart extends React.Component {
   render() {
     const data = default_style(this.props.data, this.props.labels)
-    console.log(data);
     return (
       <div>
         <Line data={data} height={400} options={{
