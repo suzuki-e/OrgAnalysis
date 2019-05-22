@@ -107,8 +107,8 @@ namespace :pull_data do
         is_archived: channel.is_archived,
         name_normalized: channel.name_normalized,
         is_private: channel.is_private,
-        topic: channel.topic,
-        purpose: channel.purpose
+        topic: channel.topic.value,
+        purpose: channel.purpose.value
       }
       c.save!
       puts i if (i % 1000).zero?

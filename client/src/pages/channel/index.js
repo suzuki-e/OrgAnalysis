@@ -7,7 +7,7 @@ import SimpleLinkedTable from "../../components/SimpleLinkedTable";
 const ENDPOINT_BASE = process.env.REACT_APP_API_ENDPOINT_BASE;
 
 const columnNames = [
-  'name', 'topic', 'purpose', 'member_count', 'message_count'
+  'name', 'topic', 'purpose', 'users_count', 'messages_count'
 ];
 
 export default class ChannelTop extends React.Component {
