@@ -10,11 +10,6 @@ class MessagesController < ApplicationController
     @groupdates = messages.group_by_hour(:timestamp).count
   end
 
-  def groupdate
-    groupdates = Message.all.group_by_hour(:timestamp).count
-    render json: ChartjsLine.new(groupdates: groupdates).with_default_style
-  end
-
   # GET /messages/1
   # GET /messages/1.json
   def show
