@@ -4,7 +4,7 @@ class EmojisController < ApplicationController
   # GET /emojis
   # GET /emojis.json
   def index
-    @emojis = Emoji.all.page(params[:page])
+    @emojis = Emoji.all
     render json: @emojis
   end
 
