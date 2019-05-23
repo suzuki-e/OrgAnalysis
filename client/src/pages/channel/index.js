@@ -1,10 +1,8 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
-import axios from "axios";
 import PropTypes from "prop-types";
-import SimpleLinkedTable from "../../components/SimpleLinkedTable";
+import ChannelPaginationTable from "./components/ChannelPaginationTable";
 
-const ENDPOINT_BASE = process.env.REACT_APP_API_ENDPOINT_BASE;
 
 const columnNames = [
   'name', 'topic', 'purpose', 'users_count', 'messages_count'
@@ -13,25 +11,7 @@ const columnNames = [
 export default class ChannelTop extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      channels: {},
-      link_paths: {}
-    };
-    this.getData();
     this.handleClick = this.handleClick.bind(this)
-  }
-
-  getData() {
-    axios
-      .get(ENDPOINT_BASE + '/channels.json')
-      .then(results => {
-        const data = results.data;
-        const link_paths = data.map(c => `/channels/${c.id}`);
-        this.setState({
-          channels: data,
-          link_paths: link_paths,
-        });
-      });
   }
 
   handleClick(path) {
@@ -46,10 +26,8 @@ export default class ChannelTop extends React.Component {
           チャンネル一覧
         </Typography>
         <div className={classes.tableContainer}>
-          <SimpleLinkedTable
-            data={this.state.channels}
+          <ChannelPaginationTable
             columnNames={columnNames}
-            link_paths={this.state.link_paths}
             handleClick={this.handleClick}
           />
         </div>
