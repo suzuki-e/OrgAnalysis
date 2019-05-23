@@ -1,7 +1,7 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
-import SimpleLineChart from "../../components/SimpleLineChart";
-import SimpleTable from "../../components/SimpleTable";
+import SimpleLineChart from "../../components/charts/SimpleLineChart";
+import SimpleTable from "../../components/tables/SimpleTable";
 import axios from "axios";
 import PropTypes from "prop-types";
 

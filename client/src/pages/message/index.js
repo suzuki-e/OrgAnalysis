@@ -1,6 +1,6 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
-import SimpleTable from "../../components/SimpleTable";
+import SimpleTable from "../../components/tables/SimpleTable";
 import PropTypes from "prop-types";
 
 export default class MessageTop extends React.Component {
@@ -10,7 +10,7 @@ export default class MessageTop extends React.Component {
 
   render() {
     const {classes} = this.props;
-    
+
     return (
       <main>
         <Typography variant="h4" gutterBottom component="h2">

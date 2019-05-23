@@ -1,7 +1,7 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
-import SimpleTable from "../../components/SimpleTable";
+import SimpleTable from "../../components/tables/SimpleTable";
 
 export default class SettingTop extends React.Component {
   constructor(props) {

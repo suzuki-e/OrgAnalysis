@@ -1,7 +1,7 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
-import ChannelPaginationTable from "./components/ChannelPaginationTable";
+import ChannelPaginationTable from "./components/tables/ChannelPaginationTable";
 
 
 const columnNames = [

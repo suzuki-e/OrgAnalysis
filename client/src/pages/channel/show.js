@@ -1,9 +1,9 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
-import SimpleTable from "../../components/SimpleTable";
+import SimpleTable from "../../components/tables/SimpleTable";
 import axios from "axios";
 import PropTypes from "prop-types";
-import SimpleLineChart from "../../components/SimpleLineChart";
+import SimpleLineChart from "../../components/charts/SimpleLineChart";
 
 const ENDPOINT_BASE = process.env.REACT_APP_API_ENDPOINT_BASE;
 

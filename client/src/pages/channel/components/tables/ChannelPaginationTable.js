@@ -1,16 +1,16 @@
 import React from "react";
-import Paper from "@material-ui/core/Paper";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableCell from "@material-ui/core/TableCell";
-import TableBody from "@material-ui/core/TableBody";
-import TableFooter from "@material-ui/core/TableFooter";
-import TablePagination from "@material-ui/core/TablePagination";
+import Paper from "@material-ui/core/Paper/index";
+import Table from "@material-ui/core/Table/index";
+import TableHead from "@material-ui/core/TableHead/index";
+import TableRow from "@material-ui/core/TableRow/index";
+import TableCell from "@material-ui/core/TableCell/index";
+import TableBody from "@material-ui/core/TableBody/index";
+import TableFooter from "@material-ui/core/TableFooter/index";
+import TablePagination from "@material-ui/core/TablePagination/index";
 import PropTypes from "prop-types";
 import {withStyles} from "@material-ui/core";
-import {TablePaginationActionsWrapped} from "../../../components/tables/CustomPaginationActionsTable"
-import axios from "axios";
+import {TablePaginationActionsWrapped} from "../../../../components/tables/CustomPaginationActionsTable"
+import axios from "axios/index";
 
 const ENDPOINT_BASE = process.env.REACT_APP_API_ENDPOINT_BASE;
 
