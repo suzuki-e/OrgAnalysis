@@ -73,6 +73,7 @@ class EmojiPaginationTable extends React.Component {
               <TableRow>
                 <TableCell>画像</TableCell>
                 <TableCell>id</TableCell>
+                <TableCell>使用回数</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -83,9 +84,8 @@ class EmojiPaginationTable extends React.Component {
                       <img src={row.url} alt="" width="" height="" border=""/> : 'alias'
                     }
                   </TableCell>
-                  <TableCell component="th" scope="row">
-                    {row.slack_name}
-                  </TableCell>
+                  <TableCell component="th" scope="row">{row.slack_name}</TableCell>
+                  <TableCell component="th" scope="row">{row.used_count}</TableCell>
                 </TableRow>
               ))}
               {emptyRows > 0 && (
