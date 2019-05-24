@@ -1,7 +1,7 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
-import SimpleTable from "../../components/tables/SimpleTable";
 import PropTypes from "prop-types";
+import MessagePaginationTable from "./components/tables/MessagePaginationTable";
 
 export default class MessageTop extends React.Component {
   constructor(props) {
@@ -17,7 +17,7 @@ export default class MessageTop extends React.Component {
           メッセージ一覧
         </Typography>
         <div className={classes.tableContainer}>
-          <SimpleTable/>
+          <MessagePaginationTable/>
         </div>
       </main>
     );
