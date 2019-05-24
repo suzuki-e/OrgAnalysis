@@ -27,8 +27,9 @@ export default class ChannelShow extends React.Component {
       .get(ENDPOINT_BASE + `/channels/${this.state.channel_id}.json`)
       .then(results => {
         const data = results.data;
+        // dataがarrayじゃないのでarrayにする
         this.setState({
-          channel: data
+          channel: [data]
         });
       });
 
