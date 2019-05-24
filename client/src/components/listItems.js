@@ -2,7 +2,6 @@ import React from 'react';
 import ListItem from '@material-ui/core/ListItem/index';
 import ListItemIcon from '@material-ui/core/ListItemIcon/index';
 import ListItemText from '@material-ui/core/ListItemText/index';
-import ListSubheader from '@material-ui/core/ListSubheader/index';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AlternateEmail from '@material-ui/icons/AlternateEmail';
 import PeopleIcon from '@material-ui/icons/People';

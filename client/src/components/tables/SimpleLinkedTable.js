@@ -7,7 +7,6 @@ import TableCell from '@material-ui/core/TableCell/index';
 import TableHead from '@material-ui/core/TableHead/index';
 import TableRow from '@material-ui/core/TableRow/index';
 import Paper from '@material-ui/core/Paper/index';
-import {Link} from 'react-router-dom'
 
 const styles = {
   root: {
@@ -22,25 +21,27 @@ const styles = {
   }
 };
 
-
-const default_data = [
-  {
-    id: 'sample_data',
-    sample_a: 'sample_data_a',
-    sample_b: 'sample_data_b',
-    sample_c: 'sample_data_c',
-    sample_d: 'sample_data_d',
-    sample_e: 'sample_data_e'
-  }
-];
+const default_data = {
+  data:
+    [{
+      id: 'sample_data',
+      sample_a: 'sample_data_a',
+      sample_b: 'sample_data_b',
+      sample_c: 'sample_data_c',
+      sample_d: 'sample_data_d',
+      sample_e: 'sample_data_e'
+    }],
+  columnNames:
+    ['sample_a', 'sample_b', 'sample_c', 'sample_d', 'sample_e']
+};
 
 function SimpleLinkedTable(props) {
-  let {classes, data, columnNames, link_paths} = props;
+  let {classes, data, columnNames, link_paths, handleClick} = props;
   if (columnNames === undefined) {
-    columnNames = ['sample_a', 'sample_b', 'sample_c', 'sample_d', 'sample_e']
+    columnNames = default_data.columnNames
   }
-  if (data === undefined || !data.length) {
-    data = default_data
+  if (data === undefined) {
+    data = default_data.data
   }
   return (
     <Paper className={classes.root}>
@@ -54,7 +55,7 @@ function SimpleLinkedTable(props) {
         </TableHead>
         <TableBody>
           {data.map((n, i) => (
-            <TableRow hover key={n.id} onClick={() => props.handleClick(link_paths[i])}>
+            <TableRow hover key={n.id} onClick={() => handleClick(link_paths[i])}>
               {columnNames.map(columnName => (
                 <TableCell component="th" scope="row">
                   {n[columnName]}
@@ -70,8 +71,8 @@ function SimpleLinkedTable(props) {
 
 SimpleLinkedTable.propTypes = {
   classes: PropTypes.object.isRequired,
-  data: PropTypes.object.isRequired,
-  columnNames: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
+  columnNames: PropTypes.array.isRequired,
   link_paths: PropTypes.object.isRequired,
   handleClick: PropTypes.func.isRequired
 };

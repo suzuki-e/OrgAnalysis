@@ -4,10 +4,6 @@ import PropTypes from "prop-types";
 import MessagePaginationTable from "./components/tables/MessagePaginationTable";
 
 export default class MessageTop extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const {classes} = this.props;
 

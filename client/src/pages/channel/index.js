@@ -3,11 +3,6 @@ import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import ChannelPaginationTable from "./components/tables/ChannelPaginationTable";
 
-
-const columnNames = [
-  'name', 'topic', 'purpose', 'users_count', 'messages_count'
-];
-
 export default class ChannelTop extends React.Component {
   constructor(props) {
     super(props);
@@ -27,7 +22,6 @@ export default class ChannelTop extends React.Component {
         </Typography>
         <div className={classes.tableContainer}>
           <ChannelPaginationTable
-            columnNames={columnNames}
             handleClick={this.handleClick}
           />
         </div>

@@ -18,24 +18,27 @@ const styles = {
   },
 };
 
-const default_data = [
-  {
-    id: 'sample_data',
-    sample_a: 'sample_data_a',
-    sample_b: 'sample_data_b',
-    sample_c: 'sample_data_c',
-    sample_d: 'sample_data_d',
-    sample_e: 'sample_data_e'
-  }
-];
+const default_data = {
+  data:
+    [{
+      id: 'sample_data',
+      sample_a: 'sample_data_a',
+      sample_b: 'sample_data_b',
+      sample_c: 'sample_data_c',
+      sample_d: 'sample_data_d',
+      sample_e: 'sample_data_e'
+    }],
+  columnNames:
+    ['sample_a', 'sample_b', 'sample_c', 'sample_d', 'sample_e']
+};
 
 function SimpleTable(props) {
   let {classes, data, columnNames} = props;
   if (columnNames === undefined) {
-    columnNames = ['sample_a', 'sample_b', 'sample_c', 'sample_d', 'sample_e']
+    columnNames = default_data.columnNames;
   }
-  if (data === undefined || !data.length) {
-    data = default_data
+  if (data === undefined) {
+    data = default_data.data;
   }
   return (
     <Paper className={classes.root}>
@@ -65,8 +68,8 @@ function SimpleTable(props) {
 
 SimpleTable.propTypes = {
   classes: PropTypes.object.isRequired,
-  data: PropTypes.object.isRequired,
-  columnNames: PropTypes.object.isRequired,
+  data: PropTypes.array,
+  columnNames: PropTypes.array,
 };
 
 export default withStyles(styles)(SimpleTable);

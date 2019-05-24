@@ -62,7 +62,7 @@ class ChannelPaginationTable extends React.Component {
   };
 
   render() {
-    const {classes, handleClick, columnNames} = this.props;
+    const {classes, handleClick} = this.props;
     const {rows, rowsPerPage, page, link_paths} = this.state;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
     const slice_start = page * rowsPerPage;
@@ -73,19 +73,21 @@ class ChannelPaginationTable extends React.Component {
           <Table className={classes.table}>
             <TableHead>
               <TableRow>
-                {columnNames.map(columnName => (
-                  <TableCell>{columnName}</TableCell>
-                ))}
+                <TableCell>チャンネル名</TableCell>
+                <TableCell>トピック</TableCell>
+                <TableCell>目的</TableCell>
+                <TableCell>ユーザー数</TableCell>
+                <TableCell>メッセージ数</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {rows.slice(slice_start, slice_end).map((row, i) => (
                 <TableRow hover key={row.id} onClick={() => handleClick(link_paths.slice(slice_start, slice_end)[i])}>
-                  {columnNames.map(columnName => (
-                    <TableCell component="th" scope="row">
-                      {row[columnName]}
-                    </TableCell>
-                  ))}
+                  <TableCell component="th" scope="row">{row.name}</TableCell>
+                  <TableCell component="th" scope="row">{row.topic}</TableCell>
+                  <TableCell component="th" scope="row">{row.purpose}</TableCell>
+                  <TableCell component="th" scope="row">{row.users_count}</TableCell>
+                  <TableCell component="th" scope="row">{row.messages_count}</TableCell>
                 </TableRow>
               ))}
               {emptyRows > 0 && (
@@ -120,7 +122,6 @@ class ChannelPaginationTable extends React.Component {
 
 ChannelPaginationTable.propTypes = {
   classes: PropTypes.object.isRequired,
-  columnNames: PropTypes.array.isRequired,
   handleClick: PropTypes.func.isRequired,
 };
 

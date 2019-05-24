@@ -1,13 +1,8 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
-import SimpleTable from "../../components/tables/SimpleTable";
 
 export default class SettingTop extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const {classes} = this.props;
 
@@ -17,7 +12,7 @@ export default class SettingTop extends React.Component {
           設定
         </Typography>
         <div className={classes.tableContainer}>
-          <SimpleTable/>
+          <p>No data yet.</p>
         </div>
       </main>
     );

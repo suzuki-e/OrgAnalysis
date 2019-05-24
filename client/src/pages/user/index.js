@@ -4,10 +4,6 @@ import PropTypes from 'prop-types';
 import UserPaginationTable from "./components/tables/UserPaginationTable";
 
 export default class UserTop extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const {classes} = this.props;
     return (

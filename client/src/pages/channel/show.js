@@ -15,7 +15,7 @@ export default class ChannelShow extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      channel: {},
+      channel: [],
       groupdate: {},
       channel_id: props.match.params.id
     };
@@ -50,7 +50,7 @@ export default class ChannelShow extends React.Component {
           特定のチャンネル channel_id:{match.params.id}
         </Typography>
         <div className={classes.tableContainer}>
-          <SimpleTable data={[this.state.channel]} columnNames={columnNames}/>
+          <SimpleTable data={this.state.channel} columnNames={columnNames}/>
         </div>
         <Typography component="div" className={classes.chartContainer}>
           <SimpleLineChart
