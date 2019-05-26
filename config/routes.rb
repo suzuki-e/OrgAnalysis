@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :messages
   resources :channels do
     get 'message_groupdate', to: 'message_groupdates#index'
+    get 'channel_emoji', to: 'channel_emojis#index'
   end
   get 'message_groupdate', to: 'message_groupdates#index'
   resources :users

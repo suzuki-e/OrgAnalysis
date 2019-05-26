@@ -81,7 +81,7 @@ class EmojiPaginationTable extends React.Component {
                 <TableRow key={row.id}>
                   <TableCell align="right">
                     {row.url.startsWith('https') ?
-                      <img src={row.url} alt="" width="" height="" border=""/> : 'alias'
+                      <img src={row.url} alt="" width="" height="" border=""/> : 'alias/no-data'
                     }
                   </TableCell>
                   <TableCell component="th" scope="row">{row.slack_name}</TableCell>
