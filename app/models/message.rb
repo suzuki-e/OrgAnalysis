@@ -4,5 +4,6 @@ class Message < ApplicationRecord
   delegate :user, to: :channel_user
   has_many :reactions
   has_many :emojis, through: :reactions
+  counter_culture :channel_user, column_name: 'messages_count'
   counter_culture %i[channel_user channel], column_name: 'messages_count'
 end
