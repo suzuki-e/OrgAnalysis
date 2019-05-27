@@ -15,12 +15,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import {mainListItems, secondaryListItems} from './listItems';
-import SimpleLineChart from './SimpleLineChart';
-import SimpleTable from './SimpleTable';
-import axios from 'axios'
+import MainContent from './MainContent'
 
 const drawerWidth = 240;
-const ENDPOINT_BASE = process.env.REACT_APP_API_ENDPOINT_BASE;
 
 const styles = theme => ({
   root: {
@@ -104,20 +101,7 @@ class Dashboard extends React.Component {
     super(props);
     this.state = {
       open: true,
-      groupdate: {}
     };
-    this.getData();
-  }
-
-  getData() {
-    axios
-      .get(ENDPOINT_BASE + '/messages/groupdate')
-      .then(results => {
-        const data = results.data;
-        this.setState({
-          groupdate: data
-        });
-      });
   }
 
   handleDrawerOpen = () => {
@@ -130,7 +114,6 @@ class Dashboard extends React.Component {
 
   render() {
     const {classes} = this.props;
-
     return (
       <div className={classes.root}>
         <CssBaseline/>
@@ -157,10 +140,10 @@ class Dashboard extends React.Component {
               noWrap
               className={classes.title}
             >
-              Dashboard
+              OrgAnalisis
             </Typography>
             <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
+              <Badge badgeContent={0} color="secondary">
                 <NotificationsIcon/>
               </Badge>
             </IconButton>
@@ -185,18 +168,7 @@ class Dashboard extends React.Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer}/>
-          <Typography variant="h4" gutterBottom component="h2">
-            メッセージ数
-          </Typography>
-          <Typography component="div" className={classes.chartContainer}>
-            <SimpleLineChart data={this.state.groupdate}/>
-          </Typography>
-          <Typography variant="h4" gutterBottom component="h2">
-            Products
-          </Typography>
-          <div className={classes.tableContainer}>
-            <SimpleTable/>
-          </div>
+          <MainContent classes={classes}/>
         </main>
       </div>
     );

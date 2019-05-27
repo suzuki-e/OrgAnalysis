@@ -4,15 +4,10 @@ class MessagesController < ApplicationController
   # GET /messages
   # GET /messages.json
   def index
-    messages = Message.all
-    @messages_list = messages.page(params[:page])
-
-    @groupdates = messages.group_by_hour(:timestamp).count
-  end
-
-  def groupdate
-    groupdates = Message.all.group_by_hour(:timestamp).count
-    render json: ChartjsLine.new(groupdates: groupdates).with_default_style
+    @messages = Message.includes(channel_user: %i[channel user]).all
+    render json: @messages.to_json(include:
+                                     { channel_user:
+                                         { include: %i[user channel] } })
   end
 
   # GET /messages/1

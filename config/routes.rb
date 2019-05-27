@@ -1,10 +1,11 @@
 Rails.application.routes.draw do
   resources :reactions
   resources :emojis
-  resources :messages do
-    get :groupdate, on: :collection
+  resources :messages
+  resources :channels do
+    get 'message_groupdate', to: 'message_groupdates#index'
   end
-  resources :channels
+  get 'message_groupdate', to: 'message_groupdates#index'
   resources :users
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
