@@ -75,6 +75,7 @@ class UserPaginationTable extends React.Component {
                 <TableCell>名前</TableCell>
                 <TableCell>本名</TableCell>
                 <TableCell>Email</TableCell>
+                <TableCell>発言数</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -91,6 +92,9 @@ class UserPaginationTable extends React.Component {
                   </TableCell>
                   <TableCell component="th" scope="row">
                     {row.email}
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    {row.messages_count}
                   </TableCell>
                 </TableRow>
               ))}
