@@ -1,12 +1,12 @@
 import React from "react";
-import Paper from "@material-ui/core/Paper/index";
-import Table from "@material-ui/core/Table/index";
-import TableHead from "@material-ui/core/TableHead/index";
-import TableRow from "@material-ui/core/TableRow/index";
-import TableCell from "@material-ui/core/TableCell/index";
-import TableBody from "@material-ui/core/TableBody/index";
-import TableFooter from "@material-ui/core/TableFooter/index";
-import TablePagination from "@material-ui/core/TablePagination/index";
+import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
+import TableFooter from "@material-ui/core/TableFooter";
+import TablePagination from "@material-ui/core/TablePagination";
 import PropTypes from "prop-types";
 import {withStyles} from "@material-ui/core";
 import {TablePaginationActionsWrapped} from "../../../../components/tables/CustomPaginationActionsTable"
@@ -62,9 +62,9 @@ class MessagePaginationTable extends React.Component {
   render() {
     const {classes} = this.props;
     const {rows, rowsPerPage, page} = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-    const slice_start = page * rowsPerPage;
-    const slice_end = page * rowsPerPage + rowsPerPage;
+    const sliceStart = page * rowsPerPage;
+    const sliceEnd = (page + 1) * rowsPerPage;
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - sliceStart);
     return (
       <Paper className={classes.root}>
         <div className={classes.tableWrapper}>
@@ -78,7 +78,7 @@ class MessagePaginationTable extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.slice(slice_start, slice_end).map((row) => (
+              {rows.slice(sliceStart, sliceEnd).map((row) => (
                 <TableRow key={row.id}>
                   <TableCell component="th" scope="row">
                     {row.channel_user.channel.name}
