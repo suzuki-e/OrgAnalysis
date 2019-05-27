@@ -44,8 +44,8 @@ class SimpleLineChart extends React.Component {
 }
 
 SimpleLineChart.propTypes = {
-  data: PropTypes.array.isRequired,
-  labels: PropTypes.array.isRequired,
+  data: PropTypes.array,
+  labels: PropTypes.array,
 };
 
 export default SimpleLineChart;
