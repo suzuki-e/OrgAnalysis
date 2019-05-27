@@ -22,6 +22,7 @@ export default class ChannelShow extends React.Component {
       channel: [],
       groupdate: {},
       rankSortedEmojis: [],
+      rankSortedUsers: [],
       channel_id: props.match.params.id
     };
   };
@@ -56,6 +57,15 @@ export default class ChannelShow extends React.Component {
         const data = results.data;
         this.setState({
           rankSortedEmojis: data
+        });
+      });
+
+    ApiClient
+      .get(`/channels/${this.state.channel_id}/users`)
+      .then(results => {
+        const data = results.data;
+        this.setState({
+          rankSortedUsers: data
         });
       });
   }
@@ -104,6 +114,31 @@ export default class ChannelShow extends React.Component {
               data={this.state.groupdate.data}
               labels={this.state.groupdate.labels}/>
           </Typography>
+          <Typography variant='h6'>発言者ランキング</Typography>
+          <Paper className={classes.root}>
+            <Table className={classes.table}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ranking</TableCell>
+                  <TableCell>count</TableCell>
+                  <TableCell>image</TableCell>
+                  <TableCell>名前</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {this.state.rankSortedUsers.slice(0, ranking_max).map((row, i) => (
+                  <TableRow key={row.user.id}>
+                    <TableCell component="th" scope="row">{i + 1}</TableCell>
+                    <TableCell component="th" scope="row">{row.messages_count}</TableCell>
+                    <TableCell component="th" scope="row">
+                      <img src={row.user.profile_image} alt="" width="32" height="32" border=""/>
+                    </TableCell>
+                    <TableCell component="th" scope="row">{row.user.real_name}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Paper>
         </div>
       </main>
     );
