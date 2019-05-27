@@ -15,14 +15,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import {mainListItems, secondaryListItems} from './listItems';
-import {Route, Switch} from "react-router-dom"
-import TopPage from '../pages/top/index.js'
-import ChannelTop from "../pages/channel";
-import ChannelShow from "../pages/channel/show";
-import UserTop from "../pages/user";
-import MessageTop from "../pages/message";
-import EmojiTop from "../pages/emoji";
-import SettingTop from "../pages/setting";
+import MainContent from './MainContent'
 
 const drawerWidth = 240;
 
@@ -175,30 +168,7 @@ class Dashboard extends React.Component {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer}/>
-          <Switch>
-            <Route exact path='/' render={props => (
-              <TopPage classes={classes} {...props} />
-            )}/>
-            <Route exact path='/users' render={props => (
-              <UserTop classes={classes} {...props}/>
-            )}/>
-            <Route exact path='/channels' render={props => (
-              <ChannelTop classes={classes} {...props}/>
-            )}/>
-            <Route exact path='/channels/:id' render={props => (
-              <ChannelShow classes={classes} {...props}/>
-            )}/>
-            <Route exact path='/messages' render={props => (
-              <MessageTop classes={classes} {...props}/>
-            )}/>
-            <Route exact path='/emojis' render={props => (
-              <EmojiTop classes={classes} {...props}/>
-            )}/>
-            <Route exact path='/settings' render={props => (
-              <SettingTop classes={classes} {...props}/>
-            )}/>
-            <Route render={() => <h1>Not Found.</h1>}/>
-          </Switch>
+          <MainContent classes={classes}/>
         </main>
       </div>
     );
