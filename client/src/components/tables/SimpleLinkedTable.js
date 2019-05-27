@@ -36,13 +36,13 @@ const default_data = {
 };
 
 function SimpleLinkedTable(props) {
-  let {classes, data, columnNames, link_paths, handleClick} = props;
-  if (columnNames === undefined) {
-    columnNames = default_data.columnNames
-  }
-  if (data === undefined) {
-    data = default_data.data
-  }
+  const {
+    classes,
+    link_paths,
+    handleClick,
+    data = default_data.data,
+    columnNames = default_data.columnNames,
+  } = props;
   return (
     <Paper className={classes.root}>
       <Table className={classes.table}>

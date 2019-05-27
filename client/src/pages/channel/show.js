@@ -1,11 +1,9 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import SimpleTable from "../../components/tables/SimpleTable";
-import axios from "axios";
 import PropTypes from "prop-types";
 import SimpleLineChart from "../../components/charts/SimpleLineChart";
-
-const ENDPOINT_BASE = process.env.REACT_APP_API_ENDPOINT_BASE;
+import ApiClient from "../../utils/ApiClient";
 
 const columnNames = [
   'name', 'topic', 'purpose', 'member_count', 'message_count'
@@ -19,12 +17,15 @@ export default class ChannelShow extends React.Component {
       groupdate: {},
       channel_id: props.match.params.id
     };
-    this.getData()
-  }
+  };
+
+  componentDidMount() {
+    this.getData();
+  };
 
   getData() {
-    axios
-      .get(ENDPOINT_BASE + `/channels/${this.state.channel_id}.json`)
+    ApiClient
+      .get(`/channels/${this.state.channel_id}.json`)
       .then(results => {
         const data = results.data;
         // dataがarrayじゃないのでarrayにする
@@ -33,8 +34,8 @@ export default class ChannelShow extends React.Component {
         });
       });
 
-    axios
-      .get(ENDPOINT_BASE + `/channels/${this.state.channel_id}/message_groupdate`)
+    ApiClient
+      .get(`/channels/${this.state.channel_id}/message_groupdate`)
       .then(results => {
         const data = results.data;
         this.setState({

@@ -10,9 +10,7 @@ import TablePagination from "@material-ui/core/TablePagination/index";
 import PropTypes from "prop-types";
 import {withStyles} from "@material-ui/core";
 import {TablePaginationActionsWrapped} from "../../../../components/tables/CustomPaginationActionsTable"
-import axios from "axios/index";
-
-const ENDPOINT_BASE = process.env.REACT_APP_API_ENDPOINT_BASE;
+import ApiClient from "../../../../utils/ApiClient";
 
 const styles = theme => ({
   root: {
@@ -36,12 +34,15 @@ class ChannelPaginationTable extends React.Component {
       page: 0,
       rowsPerPage: 10,
     };
-    this.getData();
-  }
+  };
 
-  getData = () => {
-    axios
-      .get(ENDPOINT_BASE + '/channels.json')
+  componentDidMount() {
+    this.getData();
+  };
+
+  getData() {
+    ApiClient
+      .get('/channels.json')
       .then(results => {
         const data = results.data;
         const link_paths = data.map(c => `/channels/${c.id}`);

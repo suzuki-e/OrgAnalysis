@@ -2,10 +2,8 @@ import React from "react";
 import Typography from "@material-ui/core/Typography";
 import SimpleLineChart from "../../components/charts/SimpleLineChart";
 import SimpleTable from "../../components/tables/SimpleTable";
-import axios from "axios";
 import PropTypes from "prop-types";
-
-const ENDPOINT_BASE = process.env.REACT_APP_API_ENDPOINT_BASE;
+import ApiClient from "../../utils/ApiClient";
 
 export default class TopPage extends React.Component {
   constructor(props) {
@@ -13,12 +11,15 @@ export default class TopPage extends React.Component {
     this.state = {
       groupdate: {}
     };
-    this.getData()
-  }
+  };
+
+  componentDidMount() {
+    this.getData();
+  };
 
   getData() {
-    axios
-      .get(ENDPOINT_BASE + '/message_groupdate')
+    ApiClient
+      .get('/message_groupdate')
       .then(results => {
         const data = results.data;
         this.setState({
