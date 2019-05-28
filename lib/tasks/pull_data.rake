@@ -155,6 +155,10 @@ namespace :pull_data do
     oldest = now_tmp.days_ago(days_ago).strftime("%s.%6N")
     now = now_tmp.strftime("%s.%6N")
 
+    # SlackAPIの制限(回/min)にかからないギリギリで呼び続けるため、
+    # 制限引っかかるたびにsleep_timeを追加する
+    sleep_time = 0
+    sleep_delta = 0.1
     puts "Retrieve data from #{days_ago} days_ago."
     channel_list.each.with_index(1) do |channel, i|
       # 不必要に保存しない
@@ -172,16 +176,46 @@ namespace :pull_data do
       loop do
         begin
           puts " #{Time.at(oldest.to_i)} to #{Time.at(latest.to_i)}"
+          sleep(sleep_time)
           history_response = slack_client.conversations_history(channel: channel.id,
                                                                 limit: per_channel_message_limit,
                                                                 latest: latest,
                                                                 oldest: oldest)
-          messages_list.concat(history_response.messages)
+          latest_reply = now
+          history_response.messages.each do |message|
+            # Threadが無ければ、メッセージを追加して終わり
+            unless message.key?('thread_ts')
+              messages_list.concat([message])
+              next
+            end
+            # Threadがあれば、返信を取得
+            loop do
+              begin
+                replies_response = slack_client.conversations_replies(channel: channel.id,
+                                                                      ts: message.thread_ts,
+                                                                      latest: latest_reply,
+                                                                      oldest: oldest,
+                                                                      limit: 1000)
+              rescue Slack::Web::Api::Errors::TooManyRequestsError => e
+                # Slack APIの Limitationに触れたらやり直し
+                # ref. https://api.slack.com/docs/rate-limits
+                sleep_time += sleep_delta
+                puts "Updated sleep time: #{sleep_time} seconds."
+                sleep(5)
+                retry
+              end
+              messages_list.concat(replies_response.messages)
+              break unless replies_response.fetch(:has_more)
+              # has_moreがtrueの場合
+              # 取得した最も古いメッセージのtsをlatestへ設定することで、まだ取得していないメッセージを取得できる
+              latest_reply = replies_response.messages.last.ts
+            end
+          end
         rescue Slack::Web::Api::Errors::TooManyRequestsError => e
           # Slack APIの Limitationに触れたらやり直し
           # ref. https://api.slack.com/docs/rate-limits
-          puts e
-          puts 'Sleep 5 seconds.'
+          sleep_time += sleep_delta
+          puts "Updated sleep time: #{sleep_time} seconds."
           sleep(5)
           retry
         end
@@ -196,7 +230,11 @@ namespace :pull_data do
       messages_list.each do |message|
         # Channel Joinなどの自動メッセージをスキップする
         # ref. https://api.slack.com/events/message
-        next if message.key?('subtype')
+        next unless ['',
+                     'message_changed',
+                     'message_replied',
+                     'thread_broadcast',
+                     'me_message'].include?(message.fetch('subtype', ''))
 
         user = find_user_by_slack_id(message.user)
         # Botなど、UserDBに保存していないユーザーはスキップする
