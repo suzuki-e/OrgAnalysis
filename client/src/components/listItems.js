@@ -1,7 +1,7 @@
 import React from 'react';
-import ListItem from '@material-ui/core/ListItem/index';
-import ListItemIcon from '@material-ui/core/ListItemIcon/index';
-import ListItemText from '@material-ui/core/ListItemText/index';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AlternateEmail from '@material-ui/icons/AlternateEmail';
 import PeopleIcon from '@material-ui/icons/People';
@@ -15,7 +15,7 @@ const linkStyle = {
 };
 
 export const mainListItems = (
-  <div>
+  <li>
     <Link to="/" style={linkStyle}>
       <ListItem button>
         <ListItemIcon>
@@ -56,11 +56,11 @@ export const mainListItems = (
         <ListItemText primary="Emojis"/>
       </ListItem>
     </Link>
-  </div>
+  </li>
 );
 
 export const secondaryListItems = (
-  <div>
+  <li>
     <Link to="/setting" style={linkStyle}>
       <ListItem button>
         <ListItemIcon>
@@ -69,5 +69,5 @@ export const secondaryListItems = (
         <ListItemText primary="Settings"/>
       </ListItem>
     </Link>
-  </div>
+  </li>
 );

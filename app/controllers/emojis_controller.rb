@@ -4,7 +4,7 @@ class EmojisController < ApplicationController
   # GET /emojis
   # GET /emojis.json
   def index
-    @emojis = Emoji.all
+    @emojis = Emoji.all.order(used_count: 'DESC')
     render json: @emojis
   end
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles/index';
-import Table from '@material-ui/core/Table/index';
-import TableBody from '@material-ui/core/TableBody/index';
-import TableCell from '@material-ui/core/TableCell/index';
-import TableHead from '@material-ui/core/TableHead/index';
-import TableRow from '@material-ui/core/TableRow/index';
-import Paper from '@material-ui/core/Paper/index';
+import {withStyles} from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
 const styles = {
   root: {
@@ -18,7 +18,7 @@ const styles = {
   },
 };
 
-const default_data = {
+const defaultData = {
   data:
     [{
       id: 'sample_data',
@@ -35,8 +35,8 @@ const default_data = {
 function SimpleTable(props) {
   const {
     classes,
-    data = default_data.data,
-    columnNames = default_data.columnNames,
+    data = defaultData.data,
+    columnNames = defaultData.columnNames,
   } = props;
   return (
     <Paper className={classes.root}>

@@ -1,12 +1,12 @@
 import React from "react";
-import Paper from "@material-ui/core/Paper/index";
-import Table from "@material-ui/core/Table/index";
-import TableHead from "@material-ui/core/TableHead/index";
-import TableRow from "@material-ui/core/TableRow/index";
-import TableCell from "@material-ui/core/TableCell/index";
-import TableBody from "@material-ui/core/TableBody/index";
-import TableFooter from "@material-ui/core/TableFooter/index";
-import TablePagination from "@material-ui/core/TablePagination/index";
+import Paper from "@material-ui/core/Paper";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
+import TableFooter from "@material-ui/core/TableFooter";
+import TablePagination from "@material-ui/core/TablePagination";
 import PropTypes from "prop-types";
 import {withStyles} from "@material-ui/core";
 import {TablePaginationActionsWrapped} from "../../../../components/tables/CustomPaginationActionsTable"
@@ -30,7 +30,7 @@ class ChannelPaginationTable extends React.Component {
     super(props);
     this.state = {
       rows: [],
-      link_paths: [],
+      linkPaths: [],
       page: 0,
       rowsPerPage: 10,
     };
@@ -45,10 +45,10 @@ class ChannelPaginationTable extends React.Component {
       .get('/channels.json')
       .then(results => {
         const data = results.data;
-        const link_paths = data.map(c => `/channels/${c.id}`);
+        const linkPaths = data.map(c => `/channels/${c.id}`);
         this.setState({
           rows: data,
-          link_paths: link_paths,
+          linkPaths: linkPaths,
         });
       })
   };
@@ -64,10 +64,10 @@ class ChannelPaginationTable extends React.Component {
 
   render() {
     const {classes, handleClick} = this.props;
-    const {rows, rowsPerPage, page, link_paths} = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-    const slice_start = page * rowsPerPage;
-    const slice_end = page * rowsPerPage + rowsPerPage;
+    const {rows, rowsPerPage, page, linkPaths} = this.state;
+    const sliceStart = page * rowsPerPage;
+    const sliceEnd = (page + 1) * rowsPerPage;
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - sliceStart);
     return (
       <Paper className={classes.root}>
         <div className={classes.tableWrapper}>
@@ -82,8 +82,8 @@ class ChannelPaginationTable extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.slice(slice_start, slice_end).map((row, i) => (
-                <TableRow hover key={row.id} onClick={() => handleClick(link_paths.slice(slice_start, slice_end)[i])}>
+              {rows.slice(sliceStart, sliceEnd).map((row, i) => (
+                <TableRow hover key={row.id} onClick={() => handleClick(linkPaths.slice(sliceStart, sliceEnd)[i])}>
                   <TableCell component="th" scope="row">{row.name}</TableCell>
                   <TableCell component="th" scope="row">{row.topic}</TableCell>
                   <TableCell component="th" scope="row">{row.purpose}</TableCell>
